@@ -1,13 +1,8 @@
 "use client";
-import { loginUser } from "@/actions/auth/login-user";
 import Link from "next/link";
-import { useActionState } from "react";
-import {  useState } from "react";
-
-const initialState = {
-  error: "",
-  success: "",
-};
+import { signIn, getProviders } from "next-auth/react";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const inputClassName =
   "w-full rounded-2xl border border-black/20 bg-white/70 px-4 py-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-amber-200/60";
@@ -54,13 +49,17 @@ function PasswordField({
   id,
   label,
   placeholder,
+  value,
   open,
+  onChange,
   onToggle,
 }: {
   id: string;
   label: string;
   placeholder: string;
+  value: string;
   open: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onToggle: () => void;
 }) {
   return (
@@ -72,6 +71,8 @@ function PasswordField({
         <input
           id={id}
           name={id}
+          value={value}
+          onChange={onChange}
           type={open ? "text" : "password"}
           placeholder={placeholder}
           className={`${inputClassName} pr-12`}
@@ -90,21 +91,78 @@ function PasswordField({
 }
 
 export default function LoginForm() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  // if come from protect page so will go to page that come from it
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const [showPassword, setShowPassword] = useState(false);
-  const [state, formAction, isPending] = useActionState(
-    loginUser,
-    initialState,
-  );
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+  const [state, setState] = useState({
+    error: "",
+    isPending: false,
+  });
+
+  const [providerState, setProviderState] = useState({
+    error: "",
+    isPending: false,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCredentialsLogin = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    setState({
+      error: "",
+      isPending: true,
+    });
+
+    const res = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+      callbackUrl: callbackUrl,
+    });
+
+    if (!res?.ok) {
+      setState({ error: "Invalid email or password.", isPending: false });
+      return;
+    }
+    router.push(callbackUrl);
+    setState({ error: "", isPending: false });
+  };
+
+  const hendleGoogleLogin = async () => {
+    setProviderState({
+      error: "",
+      isPending: true,
+    });
+    const provider = await getProviders();
+    await signIn(provider?.google.id, { callbackUrl });
+  };
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
+          onClick={hendleGoogleLogin}
+          disabled={providerState.isPending}
           className="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950"
         >
           <span className="text-base">G</span>
-          Continue with Google
+          {providerState.isPending ? "..." : " Continue with Google"}
         </button>
         <button
           type="button"
@@ -123,9 +181,7 @@ export default function LoginForm() {
         <div className="h-px flex-1 bg-slate-200" />
       </div>
 
-      <form action={formAction} className="space-y-5">
-        
-
+      <form onSubmit={handleCredentialsLogin} className="space-y-5">
         <label className="block">
           <span className="mb-2 block text-sm font-medium text-slate-700">
             Email address
@@ -134,6 +190,10 @@ export default function LoginForm() {
             name="email"
             type="email"
             placeholder="you@example.com"
+            value={data.email}
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, email: e.target.value }))
+            }
             className={inputClassName}
           />
         </label>
@@ -142,30 +202,25 @@ export default function LoginForm() {
           id="password"
           label="Password"
           placeholder="Create a secure password"
+          value={data.password}
           open={showPassword}
+          onChange={handleChange}
           onToggle={() => setShowPassword((current) => !current)}
         />
 
-    
-
-        {state?.error && <p className="text-sm text-red-600">{state.error}</p>}
-
-        {state?.success && (
-          <p className="text-sm text-green-600">{state.success}</p>
-        )}
+        {state.error && <p className="text-sm text-red-600">{state.error}</p>}
 
         <button
           type="submit"
-          disabled={isPending}
+          disabled={state.isPending}
           className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-700"
         >
-          {isPending ? (
+          {state.isPending ? (
             <>
               <span
                 aria-hidden="true"
                 className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
               />
-              
               ...
             </>
           ) : (
