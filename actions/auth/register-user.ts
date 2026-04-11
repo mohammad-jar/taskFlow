@@ -1,7 +1,7 @@
 "use server";
+import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
 import { RegisterInput, registerSchema } from "@/lib/validations/auth";
-import bcrypt from "bcryptjs";
 
 type RegisterState = {
   error?: string;
@@ -33,12 +33,12 @@ export async function registerUser(
     return {error: 'email is already exisit...'}
   }
 
-  const hashed_password = await bcrypt.hash(password, 10);
+   const hashedPassword = await hashPassword(password);
   await prisma.user.create({
     data: {
       name,
       email,
-      password: hashed_password,
+      password: hashedPassword,
     },
   })
   
