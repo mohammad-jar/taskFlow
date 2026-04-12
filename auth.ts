@@ -52,8 +52,8 @@ export const authOptions: NextAuthOptions = {
     }),
 
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
 
@@ -79,7 +79,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
-
       if (user) {
         token.id = user.id;
       }
@@ -91,8 +90,6 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
       }
-            console.log("session is : ", session);
-
 
       return session;
     },

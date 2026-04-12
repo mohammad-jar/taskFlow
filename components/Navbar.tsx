@@ -1,6 +1,7 @@
 "use client";
 import { Bell, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -9,7 +10,7 @@ export default function Navbar() {
   const handleNotifications = () => {};
 
   return (
-    <nav className="flex items-center justify-between px-6 py-3  border-b">
+    <nav className="flex items-center bg-white justify-between  p-3  border-b border-blue-200">
       <div className="relative w-80">
         {/* icon */}
         <Search
@@ -29,22 +30,31 @@ export default function Navbar() {
 
       <div className="flex items-center gap-4">
         {/* notifications */}
-        <button onClick={handleNotifications}>
+        <button onClick={handleNotifications} className="cursor-pointer">
           <Bell size={18} className="text-gray-600" />
         </button>
-
         <div className="h-6 w-px bg-gray-400" />
-
-        {/* user info */}
-        <div className="flex items-center gap-2">
-          <h1> {user?.name}</h1>
-          <img
-            src={user?.image || "/vercel.svg"}
-            alt=""
-            width={30}
-            className="rounded-full"
-          />
-        </div>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <h1> {user?.name}</h1>
+            <img
+              src={user?.image || "/profile.png"}
+              alt=""
+              width={30}
+              className="rounded-full"
+            />
+          </div>
+        ) : (
+          <div>
+            <Link
+              href="/login"
+              className="rounded-lg bg-[#DCE8FF] text-[#175CD3] px-4 py-2 
+  transition duration-200 hover:bg-[#c7dbff] hover:text-[#1149a6] hover:-translate-y-0.5"
+            >
+              sign in
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
