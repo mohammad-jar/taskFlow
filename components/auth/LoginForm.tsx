@@ -3,6 +3,7 @@ import Link from "next/link";
 import { signIn, getProviders } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import SpinnerElement from '@/components/SpinnerElement'
 
 const inputClassName =
   "w-full rounded-2xl border border-black/20 bg-white/70 px-4 py-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-amber-200/60";
@@ -216,13 +217,10 @@ export default function LoginForm() {
           className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-700"
         >
           {state.isPending ? (
-            <>
-              <span
-                aria-hidden="true"
-                className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-              />
-              ...
-            </>
+            
+              <SpinnerElement />
+              
+            
           ) : (
             "Create your account"
           )}

@@ -5,7 +5,7 @@ import {
   FilePlusCorner,
   FolderDot,
   LayoutDashboard,
-  ListChecks,
+  Check,
   LogOut,
   Settings,
 } from "lucide-react";
@@ -16,8 +16,8 @@ import { usePathname } from "next/navigation";
 const sidebar_links = [
   { name: "Dashboard", ref: "/dashboard", icon: <LayoutDashboard size={16} /> },
   { name: "Project", ref: "/project", icon: <FolderDot size={16} /> },
-  { name: "My Tasks", ref: "/my_tasks", icon: <BookOpenCheck size={16} /> },
-  { name: "Create Task", ref: "/", icon: <FilePlusCorner size={16} /> },
+  { name: "My Tasks", ref: "/tasks", icon: <BookOpenCheck size={16} /> },
+  { name: "Create Task", ref: "/tasks/create", icon: <FilePlusCorner size={16} /> },
 ];
 
 const SideBar = () => {
@@ -29,10 +29,10 @@ const SideBar = () => {
     <aside className="min-h-screen  w-64 bg-[#FCFCFD] border-r border-[#EAECF0] px-5 py-6">
       <header>
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-            <ListChecks size={18} />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-400 text-white">
+            <Check />
           </div>
-          <h1 className="text-[22px] font-semibold text-[#101828]">TaskFlow</h1>
+          <h1 className="text-[22px] font-semibold text-[#101828]">Task<span className='text-blue-500'>Flow</span></h1>
         </Link>
 
         <div className="my-6 h-px bg-[#EAECF0]" />
@@ -56,11 +56,11 @@ const SideBar = () => {
                 }`}
               >
                 <span
-                  className={isActive ? "text-[#175CD3]" : "text-[#667085]"}
+                  className={isActive ? "text-[#175CD3] " : "text-[#667085]"}
                 >
                   {link.icon}
                 </span>
-                <span>{link.name}</span>
+                <span  >{link.name}</span>
               </Link>
             );
           })}
