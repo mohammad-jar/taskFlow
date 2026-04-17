@@ -8,6 +8,8 @@ import {
   Check,
   LogOut,
   Settings,
+  Notebook,
+  FilePlus,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -18,6 +20,11 @@ const sidebar_links = [
   { name: "Project", ref: "/project", icon: <FolderDot size={16} /> },
   { name: "My Tasks", ref: "/tasks", icon: <BookOpenCheck size={16} /> },
   { name: "Create Task", ref: "/tasks/create", icon: <FilePlusCorner size={16} /> },
+];
+
+const workspaces_links = [
+  { name: "Workspaces", ref: "/workspaces", icon: <Notebook size={16} /> },
+  { name: "Create Workspace", ref: "/workspaces/create", icon: <FilePlus size={16} /> },
 ];
 
 const SideBar = () => {
@@ -67,6 +74,35 @@ const SideBar = () => {
         </div>
       </div>
 
+      <div className="my-6 h-px bg-[#EAECF0]" />
+      <div>
+        <p className="mb-3 text-md font-semibold text-[#667085]">Workspace</p>
+
+        <div className="flex flex-col gap-1.5">
+          {workspaces_links.map((link, i) => {
+            const isActive = pathname === link.ref;
+
+            return (
+              <Link
+                key={i}
+                href={link.ref}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                  isActive
+                    ? "bg-[#DCE8FF] text-[#175CD3]"
+                    : "text-[#344054] hover:bg-[#F2F4F7]"
+                }`}
+              >
+                <span
+                  className={isActive ? "text-[#175CD3] " : "text-[#667085]"}
+                >
+                  {link.icon}
+                </span>
+                <span  >{link.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
       <div className="my-6 h-px bg-[#EAECF0]" />
 
       {user && (
