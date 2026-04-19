@@ -24,39 +24,7 @@ export default function WorkspacesGrid({
 }) {
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">
-            Workspaces
-          </p>
-          <h1 className="text-4xl font-semibold tracking-tight text-slate-900">
-            My Workspaces
-          </h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Organize your teams and collaborate efficiently.
-          </p>
-        </div>
-
-        <Link
-          href="/workspaces/create"
-          className="inline-flex h-11 items-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-medium text-white transition hover:bg-blue-700"
-        >
-          <Plus size={16} />
-          Create Workspace
-        </Link>
-      </div>
-
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Link
-          href="/workspaces/create"
-          className="flex  min-h-47.5 flex-col items-center justify-center rounded-md border-2 border-dashed border-blue-700 bg-white transition hover:border-blue-500 hover:shadow-sm"
-        >
-          <div className="mb-4 flex h-12 w-20 px-4 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-            <Plus size={22} />
-          </div>
-          <p className="text-md font-medium text-blue-600">Create Workspace</p>
-        </Link>
-
         {workspaces.map((workspace) => {
           return (
             <div

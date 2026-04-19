@@ -1,5 +1,6 @@
 import { getWorkspaceDetailsAction } from "@/actions/workspace/workspace-actions";
 import { authOptions } from "@/auth";
+import InviteMemberDialog from "@/components/workspace/invite-dialog";
 import WorkspaceMembersView from "@/components/workspace/workspace-members-view";
 import WorkspaceToolbar from "@/components/workspace/workspace_toolbar";
 import { Plus, Users } from "lucide-react";
@@ -7,10 +8,8 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-interface Props {
-  params: Promise<{ id: string }>;
-}
-const WorkspaceDetailsPage = async ({ params }: Props) => {
+
+const WorkspaceDetailsPage = async ({ params }: PageProps) => {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/login");
@@ -52,7 +51,7 @@ const WorkspaceDetailsPage = async ({ params }: Props) => {
 
             <div className="flex flex-col items-start">
               <h1 className="text-3xl font-medium tracking-tight ">
-                Design Team
+                {workspace.name}
               </h1>
               <div className="flex items-center gap-2 text-sm text-slate-500">
                 <Users size={16} />
@@ -61,18 +60,11 @@ const WorkspaceDetailsPage = async ({ params }: Props) => {
             </div>
           </div>
         </div>
-
-        <Link
-          href="/tasks/create"
-          className="inline-flex cursor-pointer h-8 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 text-md font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          <Plus size={20} />
-          Invite Member
-        </Link>
+        <InviteMemberDialog workspace={workspace}/>
       </div>
       <WorkspaceToolbar workspace_id={id} />
 
-      <WorkspaceMembersView workspace={workspace} members={members} currentUserId={session.user.id} />
+      <WorkspaceMembersView  members={members} currentUserId={session.user.id} />
     </section>
   );
 };

@@ -1,5 +1,6 @@
 import { getWorkspacesAction } from "@/actions/workspace/workspace-actions";
 import { authOptions } from "@/auth";
+import PageHeader from "@/components/page-header";
 import WorkspacesGrid from "@/components/workspace/WorkspacesGrid";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -21,6 +22,12 @@ const WorkspacesPage = async () => {
   }));
   return (
     <section className="p-5">
+      <PageHeader
+        title="Workspaces"
+        desc="Organize your teams and collaborate efficiently."
+        right_link="Create Workspace"
+        href= '/workspaces/create'
+      />
       <WorkspacesGrid workspaces={formattedWorkspaces} />
     </section>
   );

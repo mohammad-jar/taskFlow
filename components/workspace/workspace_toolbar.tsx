@@ -23,7 +23,6 @@ const WorkspaceToolbar = ({ workspace_id }: { workspace_id: string }) => {
           size={14}
           className="absolute left-3 right-3 top-1/2 -translate-y-1/2 text-gray-500"
         />
-        {/* <input type="text" placeholder="search members" className={`${getElementClassName("input")}`} /> */}
         <input
           type="text"
           placeholder="search members..."
