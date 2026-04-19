@@ -1,23 +1,14 @@
 import { getTasksStats, getUserTasks } from "@/actions/tasks/tasks_and_stats";
 import { authOptions } from "@/auth";
-import TasksStats from "@/components/tasks/tasks-stats";
+import PageHeader from "@/components/page-header";
+import ToolBarStatus from "@/components/ToolBarStatus";
 import TasksTable from "@/components/tasks/tasks-table";
-import TasksToolbar from "@/components/tasks/tasks-toolbar";
-import { Plus } from "lucide-react";
+import SearchToolbar from "@/components/search-toolbar";
 import { getServerSession } from "next-auth";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
-type TasksPageProps = {
-  searchParams?: Promise<{
-    status?: string;
-    search?: string;
-    priority?: string;
-    sort?: string;
-    page: number;
-  }>;
-};
-const TasksPage = async ({ searchParams }: TasksPageProps) => {
+
+const TasksPage = async ({ searchParams }: TSearchPageProps) => {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/login");
@@ -37,11 +28,9 @@ const TasksPage = async ({ searchParams }: TasksPageProps) => {
 
   const { tasks, totalPages } = res;
 
-  
-
   return (
     <section className="p-5">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div>
           <p className="mb-2 text-xs   uppercase tracking-wide text-blue-600">
             My Tasks
@@ -59,11 +48,18 @@ const TasksPage = async ({ searchParams }: TasksPageProps) => {
           <Plus size={20} />
           Create Task
         </Link>
-      </div>
-      <div className="flex justify-between items-center gap-4 mb-4">
-        <TasksStats stats={stats} />
+      </div> */}
+      <PageHeader
+        title="Tasks"
+        desc="Manage and track all your tasks in one place."
+        right_link="Create Task"
+        href= '/tasks/create'
 
-        <TasksToolbar />
+      />
+      <div className="flex justify-between items-center gap-4 mb-4">
+        <ToolBarStatus status={stats} pageName='tasks' />
+
+        <SearchToolbar pageName='tasks' />
       </div>
       <TasksTable tasks={tasks} totalPages={totalPages} />
     </section>

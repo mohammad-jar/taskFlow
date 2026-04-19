@@ -10,6 +10,7 @@ import {
   Settings,
   Notebook,
   FilePlus,
+  UserRoundPlus,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -19,12 +20,25 @@ const sidebar_links = [
   { name: "Dashboard", ref: "/dashboard", icon: <LayoutDashboard size={16} /> },
   { name: "Project", ref: "/project", icon: <FolderDot size={16} /> },
   { name: "My Tasks", ref: "/tasks", icon: <BookOpenCheck size={16} /> },
-  { name: "Create Task", ref: "/tasks/create", icon: <FilePlusCorner size={16} /> },
+  {
+    name: "Create Task",
+    ref: "/tasks/create",
+    icon: <FilePlusCorner size={16} />,
+  },
 ];
 
 const workspaces_links = [
   { name: "Workspaces", ref: "/workspaces", icon: <Notebook size={16} /> },
-  { name: "Create Workspace", ref: "/workspaces/create", icon: <FilePlus size={16} /> },
+  {
+    name: "Create Workspace",
+    ref: "/workspaces/create",
+    icon: <FilePlus size={16} />,
+  },
+  {
+    name: "Invitations",
+    ref: "/workspaces/invitations",
+    icon: <UserRoundPlus size={16} />,
+  },
 ];
 
 const SideBar = () => {
@@ -39,7 +53,9 @@ const SideBar = () => {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-400 text-white">
             <Check />
           </div>
-          <h1 className="text-[22px] font-semibold text-[#101828]">Task<span className='text-blue-500'>Flow</span></h1>
+          <h1 className="text-[22px] font-semibold text-[#101828]">
+            Task<span className="text-blue-500">Flow</span>
+          </h1>
         </Link>
 
         <div className="my-6 h-px bg-[#EAECF0]" />
@@ -67,7 +83,7 @@ const SideBar = () => {
                 >
                   {link.icon}
                 </span>
-                <span  >{link.name}</span>
+                <span>{link.name}</span>
               </Link>
             );
           })}
@@ -97,7 +113,7 @@ const SideBar = () => {
                 >
                   {link.icon}
                 </span>
-                <span  >{link.name}</span>
+                <span>{link.name}</span>
               </Link>
             );
           })}

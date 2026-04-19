@@ -21,13 +21,14 @@ type CreateTaskState = {
 };
 
 
-type TasksStatsProps = {
-  stats: {
-    all: number;
-    pending: number;
-    inProgress: number;
-    completed: number;
-  };
+type TStatusProps = {
+    all?: number;
+    pending?: number;
+    inProgress?: number;
+    completed?: number;
+    accepted?: number;
+    rejected?: number;
+    expired?: number;
 };
 
 type Task = {
@@ -41,4 +42,15 @@ type Task = {
   createdAt: Date;
   updatedAt: Date;
 
+};
+
+
+type TSearchPageProps = {
+  searchParams?: Promise<{
+    status?: string;
+    search?: string;
+    priority?: string;
+    sort?: string;
+    page: number;
+  }>;
 };

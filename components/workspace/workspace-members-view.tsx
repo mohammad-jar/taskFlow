@@ -1,21 +1,9 @@
 "use cliet";
-import Link from "next/link";
-import {
-  Search,
-  MoreVertical,
-  Settings,
-  FolderKanban,
-  Users,
-} from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 
 type WorkspaceProps = {
-  workspace: {
-    id: string;
-    name: string;
-    membersCount: number;
-  };
   currentUserId: string;
   members: TMember[];
 };
@@ -25,7 +13,6 @@ const roleStyles = {
   MEMBER: "bg-emerald-50 text-emerald-700",
 };
 export default function WorkspaceMembersView({
-  workspace,
   currentUserId,
   members,
 }: WorkspaceProps) {
@@ -75,13 +62,15 @@ export default function WorkspaceMembersView({
                       />
 
                       <p className="font-semibold text-slate-900">
-                        {formatName(member.name)}{" "}
-                        <span
-                          className={` rounded-md   text-sm ml-1 ${roleStyles[member.role]}`}
-                        >
-                          {currentUserId === member.userId && "you"}
-                        </span>
+                        {formatName(member.name)}
                       </p>
+                      {currentUserId === member.userId && (
+                        <p
+                          className={`rounded-md text-sm  bg-blue-50 text-blue-600 px-2 border border-blue-200 py-1`}
+                        >
+                          you
+                        </p>
+                      )}
                     </div>
                   </td>
 

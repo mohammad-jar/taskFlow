@@ -1,5 +1,4 @@
 "use server";
-
 import { authOptions } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createWorkspaceSchema } from "@/schema/workspace";
@@ -7,9 +6,9 @@ import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 export async function createWorkspaceAction(
-  prevData: TCreateWorkspaceState,
+  prevData: TCreateState,
   formData: FormData,
-): Promise<TCreateWorkspaceState> {
+): Promise<TCreateState> {
   const session = await getServerSession(authOptions);
   const user = session?.user;
   if (!user) {
@@ -24,6 +23,7 @@ export async function createWorkspaceAction(
     name: formData.get("name"),
     description: formData.get("description"),
   };
+  
   const parsedData = createWorkspaceSchema.safeParse(data);
   if (!parsedData.success) {
     const fieldErrors = parsedData.error.flatten().fieldErrors;
@@ -36,6 +36,7 @@ export async function createWorkspaceAction(
       },
     };
   }
+  
 
   const { name, description } = parsedData.data;
 

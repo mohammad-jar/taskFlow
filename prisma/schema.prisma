@@ -78,6 +78,8 @@ model WorkspaceInvite {
   role        WorkspaceRole @default(MEMBER)
   status      InviteStatus  @default(PENDING)
   expiresAt   DateTime?
+  message     String? 
+  
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   invitedBy User      @relation("InviteSender", fields: [invitedById], references: [id], onDelete: Cascade)

@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { TasksFilterPopover } from './TasksFilterPopover';
-import { TasksSortPopover } from './TasksSortPopover';
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { TasksFilterPopover } from "./tasks/TasksFilterPopover";
+import { TasksSortPopover } from "./tasks/TasksSortPopover";
 
-const TasksToolbar = () => {
+const SearchToolbar = ({ pageName }: { pageName: string }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const searchUrlParams = searchParams.get('search') || '';
+  const searchUrlParams = searchParams.get("search") || "";
   const [searchValue, setSearchValue] = useState(searchUrlParams);
 
   useEffect(() => {
@@ -23,9 +23,9 @@ const TasksToolbar = () => {
       const params = new URLSearchParams(searchParams.toString());
 
       if (searchValue.trim()) {
-        params.set('search', searchValue.trim());
+        params.set("search", searchValue.trim());
       } else {
-        params.delete('search');
+        params.delete("search");
       }
 
       const newQuery = params.toString();
@@ -36,8 +36,6 @@ const TasksToolbar = () => {
       const url = newQuery ? `${pathname}?${newQuery}` : pathname;
       router.replace(url);
     }, 200);
-
-
 
     return () => clearTimeout(timeout);
   }, [searchValue, pathname, router, searchParams]);
@@ -58,12 +56,14 @@ const TasksToolbar = () => {
         />
       </div>
 
-      <div className="flex items-center gap-2">
-        <TasksFilterPopover />
-        <TasksSortPopover />
-      </div>
+      {pageName === "tasks" && (
+        <div className="flex items-center gap-2">
+          <TasksFilterPopover />
+          <TasksSortPopover />
+        </div>
+      )}
     </div>
   );
 };
 
-export default TasksToolbar;
+export default SearchToolbar;

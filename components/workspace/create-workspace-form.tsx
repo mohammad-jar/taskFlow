@@ -5,7 +5,7 @@ import { createWorkspaceAction } from "@/actions/workspace/create-workspace-acti
 import SpinnerElement from "../SpinnerElement";
 import toast from "react-hot-toast";
 
-const CreateWorkspaceState: TCreateWorkspaceState = {
+const CreateWorkspaceState: TCreateState = {
   success: false,
   message: "",
   errors: {},
