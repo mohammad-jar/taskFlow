@@ -3,11 +3,10 @@ import { authOptions } from "@/auth";
 import InviteMemberDialog from "@/components/workspace/invite-dialog";
 import WorkspaceMembersView from "@/components/workspace/workspace-members-view";
 import WorkspaceToolbar from "@/components/workspace/workspace_toolbar";
-import { Plus, Users } from "lucide-react";
+import WorkspaceDefine from "@/components/workspace/WorkspaceDefine";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-
 
 const WorkspaceDetailsPage = async ({ params }: PageProps) => {
   const session = await getServerSession(authOptions);
@@ -36,35 +35,21 @@ const WorkspaceDetailsPage = async ({ params }: PageProps) => {
   }));
   return (
     <section className="p-5 bg-white min-h-screen">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="mb-2 text-xs   uppercase tracking-wide text-blue-600">
-            Workspaces/{workspace.name}
-          </p>
-          <div className="flex items-start justify-center gap-4 mb-2">
-            <span
-              
-              className="flex items-center justify-center rounded-md bg-amber-100 px-4 text-xl h-14 font-medium text-amber-300"
-            >
-              DT
-            </span>
-
-            <div className="flex flex-col items-start">
-              <h1 className="text-3xl font-medium tracking-tight ">
-                {workspace.name}
-              </h1>
-              <div className="flex items-center gap-2 text-sm text-slate-500">
-                <Users size={16} />
-                {workspace.membersCount} Members
-              </div>
-            </div>
-          </div>
+      <div className="flex items-center justify-between mb-5">
+        <WorkspaceDefine workspace_name={workspace.name} membersCount={workspace.membersCount} />
+        <div className="flex flex-col space-y-1 items-end">
+          <InviteMemberDialog workspace={workspace} />
+          <Link
+            href={`/tasks/create/${id}`}
+            className="inline-flex cursor-pointer h-8 items-center justify-center gap-2 rounded-md border border-blue-500 bg-white px-4 text-md font-medium text-blue-500 transition hover:bg-blue-50 transform duration-200"
+          >
+            Create Tasks
+          </Link>
         </div>
-        <InviteMemberDialog workspace={workspace}/>
       </div>
       <WorkspaceToolbar workspace_id={id} />
 
-      <WorkspaceMembersView  members={members} currentUserId={session.user.id} />
+      <WorkspaceMembersView members={members} currentUserId={session.user.id} />
     </section>
   );
 };

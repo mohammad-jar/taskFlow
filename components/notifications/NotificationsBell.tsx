@@ -6,28 +6,59 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import NotificationListItem from "./NotificationListItem";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SpinnerElement from "../SpinnerElement";
+import { getSocket } from "@/lib/socket-client";
 
-const NotificationsBell = () => {
+const NotificationsBell = ({ userId }: {userId : string}) => {
   const [notifications, setNotifications] = useState<TNotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    const fetchUnreadNotif = async () => {
+  const fetchUnreadNotif = useCallback(async () => {
+    try {
       setLoading(true);
       const res = await fetch("/api/notifications");
+
       if (!res.ok) {
-  throw new Error("Failed to fetch notifications");
-}
+        throw new Error("Failed to fetch notifications");
+      }
+
       const data = await res.json();
-      setNotifications(data.notifications);
-      setUnreadCount(data.unreadNotificationsCount);
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unreadNotificationsCount || 0);
+    } catch (error) {
+      console.log(error);
+    } finally {
       setLoading(false);
-    };
-    fetchUnreadNotif();
+    }
   }, []);
+
+  useEffect(() => {
+    fetchUnreadNotif();
+  }, [fetchUnreadNotif]);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const socket = getSocket();
+
+    socket.connect();
+    socket.emit("join-notifications", userId);
+
+    const handleNewNotification = (notification: TNotificationItem) => {
+      setNotifications((prev) => [notification, ...prev]);
+      setUnreadCount((prev) => prev + (notification.isRead ? 0 : 1));
+    };
+
+    socket.on("notification:new", handleNewNotification);
+
+    return () => {
+      socket.off("notification:new", handleNewNotification);
+      socket.emit("leave-notifications", userId);
+      socket.disconnect();
+    };
+  }, [userId]);
 
   return (
     <DropdownMenu>

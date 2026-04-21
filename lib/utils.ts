@@ -14,23 +14,23 @@ export function getElementClassName(elementName: string) {
 
     case "select":
       return "h-8 w-full rounded-md border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100";
-    case 'error':
+    case "error":
       return "mt-2 text-sm text-red-500";
     default:
       return "";
   }
 }
 
-export function formatTaskZodErrors  (
+export function formatTaskZodErrors(
   fieldErrors: Record<string, string[] | undefined>,
-)  {
+) {
   return {
     title: fieldErrors.title?.[0] || "",
     description: fieldErrors.description?.[0] || "",
     priority: fieldErrors.priority?.[0] || "",
     dueDate: fieldErrors.dueDate?.[0] || "",
   };
-};
+}
 
 export function timeAgo(date: string | Date) {
   const now = new Date();
@@ -52,7 +52,9 @@ export function timeAgo(date: string | Date) {
   return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
 }
 
-
+export function formatName(name: string) {
+  return name.slice(0, 2).toUpperCase();
+}
 export function formatDate(date: string | Date) {
   const d = new Date(date);
   return d.toISOString().split("T")[0];
