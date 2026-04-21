@@ -2,19 +2,20 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
-  title: string;
+  title1: string;
+  title2: string;
   desc: string;
   right_link?: string;
   href?: string;
 };
-const PageHeader = ({ title, desc, right_link, href }: Props) => {
+const PageHeader = ({ title1, title2, desc, right_link, href }: Props) => {
   return (
     <div className="flex items-center justify-between mb-5">
       <div>
-        <p className="mb-2 text-xs   uppercase tracking-wide text-blue-600">
-          {title}
+        <p className="mb-2 text-md font-medium uppercase tracking-wide text-blue-700">
+          {title1}
         </p>
-        <h1 className="text-4xl  tracking-tight text-slate-900">{title}</h1>
+        <h1 className="text-4xl  tracking-tight text-slate-900">{title2}</h1>
         <p className="my-2 text-lg text-slate-500">{desc}</p>
       </div>
 

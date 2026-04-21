@@ -1,4 +1,11 @@
 import { prisma } from "../prisma";
+import type { Prisma } from "../../generated/prisma/client";
+
+type TCreateNotification = Pick<
+  Prisma.NotificationUncheckedCreateInput,
+  "userId" | "type" | "title" | "message" | "link" | "senderId" | "workspaceId" | "inviteId"
+>;
+type DBClient = typeof prisma | Prisma.TransactionClient;
 
 export async function createNotification({
   userId,
@@ -9,8 +16,8 @@ export async function createNotification({
   senderId,
   workspaceId,
   inviteId,
-}: TCreateNotification) {
-  return prisma.notification.create({
+}: TCreateNotification, db: DBClient = prisma,) {
+  return db.notification.create({
     data: {
       userId,
       type,

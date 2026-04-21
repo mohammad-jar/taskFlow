@@ -8,7 +8,6 @@ import NotificationsBell from "./notifications/NotificationsBell";
 export default function Navbar() {
   const { data: session } = useSession();
   const user = session?.user;
-  
 
   return (
     <nav className="flex items-center bg-white justify-between  p-3  border-b border-blue-200">
@@ -31,9 +30,7 @@ export default function Navbar() {
 
       <div className="flex items-center gap-4">
         {/* notifications */}
-        
-          <NotificationsBell/>
-        
+        {session?.user && <NotificationsBell userId={session.user.id} />}
         <div className="h-6 w-px bg-gray-400" />
         {user ? (
           <div className="flex items-center gap-2">

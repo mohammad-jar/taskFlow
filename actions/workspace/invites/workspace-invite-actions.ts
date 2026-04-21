@@ -5,6 +5,7 @@ import { inviteMembersSchema } from "@/schema/workspace";
 import { revalidatePath } from "next/cache";
 import { NotificationType, InviteStatus } from "@/generated/prisma/enums";
 import { createNotification } from "@/lib/notifications/create-user-notifications";
+import { emitNotificationToUser } from "@/lib/socket-server";
 
 export async function createInviteAction(
   prevData: TCreateState,
@@ -19,6 +20,7 @@ export async function createInviteAction(
   // 4- if invited is pending before
   // 5- create invite
   // 6- create notification
+  // 7- call the socket.io to handle event
   const memberShip = await prisma.workspaceMember.findFirst({
     where: {
       workspaceId,
@@ -114,7 +116,7 @@ export async function createInviteAction(
   });
 
   if (invitedUser?.id) {
-    await createNotification({
+    const notification = await createNotification({
       userId: invitedUser.id,
       senderId: user.id,
       workspaceId,
@@ -122,8 +124,10 @@ export async function createInviteAction(
       type: NotificationType.WORKSPACE_INVITE_RECEIVED,
       title: "Workspace invite",
       message: `You were invited to join ${workspace_name} as ${role}`,
-      link: '/workspaces/invitations',
+      link: "/workspaces/invitations",
     });
+
+    emitNotificationToUser(invitedUser.id, notification);
   }
 
   revalidatePath(`/workspaces/${workspaceId}`);
@@ -139,6 +143,9 @@ export async function acceptrejectInvitationAction(
 ) {
   try {
     const user = await getCurrentUser();
+    let receiverUserId: string | null = null;
+    let realtimeNotification: unknown = null;
+
     await prisma.$transaction(async (tx) => {
       const invite = await tx.workspaceInvite.findUnique({
         where: { id: inviteId },
@@ -147,7 +154,6 @@ export async function acceptrejectInvitationAction(
           workspace: true,
         },
       });
-
       if (!invite) {
         throw new Error("Invite not found");
       }
@@ -167,18 +173,23 @@ export async function acceptrejectInvitationAction(
             isRead: true,
           },
         });
-        
-        await createNotification({
-          userId: invite.invitedById,
-          type: NotificationType.WORKSPACE_INVITE_REJECTED,
-          title: "Invitation rejected",
-          message: `${user.name} rejected your invitation to ${invite.workspace.name}`,
-          // link: `/workspaces/${invite.workspaceId}` || null,
-          link: `/workspaces/${invite.workspaceId}`,
-          senderId: user.id || null,
-          workspaceId: null,
-          inviteId: null,
-        });
+
+        const notification = await createNotification(
+          {
+            userId: invite.invitedById,
+            type: NotificationType.WORKSPACE_INVITE_REJECTED,
+            title: "Invitation rejected",
+            message: `${user.name} rejected your invitation to ${invite.workspace.name}`,
+            // link: `/workspaces/${invite.workspaceId}` || null,
+            link: `/workspaces/${invite.workspaceId}`,
+            senderId: user.id || null,
+            workspaceId: null,
+            inviteId: null,
+          },
+          tx,
+        );
+        receiverUserId = invite.invitedById;
+        realtimeNotification = notification;
       }
 
       if (inviteStatus === "ACCEPTED") {
@@ -199,17 +210,25 @@ export async function acceptrejectInvitationAction(
         });
 
         // create notification as accepted invite
-        await createNotification({
-          userId: invite.invitedById,
-          type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
-          title: "Invitation accepted",
-          message: `${user.name} accepted your invitation to ${invite.workspace.name}`,
-          // link: `/workspaces/${invite.workspaceId}` || null,
-          link: '/workspaces/invitations',
-          senderId: user.id || null,
-          workspaceId: invite.workspaceId || null,
-          inviteId: inviteId || null,
-        });
+        const notification = await createNotification(
+          {
+            userId: invite.invitedById,
+            type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+            title: "Invitation accepted",
+            message: `${user.name} accepted your invitation to ${invite.workspace.name}`,
+            // link: `/workspaces/${invite.workspaceId}` || null,
+            link: "/workspaces/invitations",
+            senderId: user.id || null,
+            workspaceId: invite.workspaceId || null,
+            inviteId: inviteId || null,
+          },
+          tx,
+        );
+        receiverUserId = invite.invitedById;
+        realtimeNotification = notification;
+      }
+      if (receiverUserId && realtimeNotification) {
+        emitNotificationToUser(receiverUserId, realtimeNotification);
       }
 
       return updatedInvite;
