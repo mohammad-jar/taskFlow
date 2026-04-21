@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { createWorkspaceAction } from "@/actions/workspace/create-workspace-actions";
-import { inviteMembersAction } from "@/actions/workspace/invites/workspace-invite-actions";
+import { createInviteAction } from "@/actions/workspace/invites/workspace-invite-actions";
 import SpinnerElement from "../SpinnerElement";
 import toast from "react-hot-toast";
 import { getElementClassName } from "@/lib/utils";
@@ -24,6 +24,7 @@ interface CreateFormProps {
   formInfo: FormField[];
   api: "workspace" | "invite";
   workspace_id?: string;
+  workspace_name?: string;
 }
 
 export default function CreateForm({
@@ -31,10 +32,9 @@ export default function CreateForm({
   formInfo,
   api,
   workspace_id,
+  workspace_name,
 }: CreateFormProps) {
-    if (!workspace_id && api === 'invite') {
-      console.log('whyyy');
-      
+    if (!workspace_id && !workspace_name && api === 'invite') {
         return null;
     }
   const formRef = useRef<HTMLFormElement>(null);
@@ -42,7 +42,7 @@ export default function CreateForm({
     api === "workspace"
       ? createWorkspaceAction
       : (prevState: TCreateState, formData: FormData) =>
-          inviteMembersAction(prevState, formData, workspace_id);
+          createInviteAction(prevState, formData, workspace_id, workspace_name);
 
   const [state, formAction, isPending] = useActionState(
     selectedAction,

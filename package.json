@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:clean": "npm run clean:next && next dev",
+    "dev:webpack": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean:next": "node -e \"const fs=require('fs');const targets=['.next/dev/cache','.next/cache','.next/dev/trace','.next/dev/trace-turbopack'];for(const p of targets){try{fs.rmSync(p,{recursive:true,force:true});}catch{}}console.log('Cleaned Next dev caches');\""
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.7.0",

@@ -1,5 +1,6 @@
 import { getWorkspacesAction } from "@/actions/workspace/workspace-actions";
 import { authOptions } from "@/auth";
+import ItemsNotFound from "@/components/ItemsNotFound";
 import PageHeader from "@/components/page-header";
 import WorkspacesGrid from "@/components/workspace/WorkspacesGrid";
 import { getServerSession } from "next-auth";
@@ -21,14 +22,23 @@ const WorkspacesPage = async () => {
     membersCount: item.workspace._count.members,
   }));
   return (
-    <section className="p-5">
+    <section className="p-5 flex-1">
       <PageHeader
         title="Workspaces"
         desc="Organize your teams and collaborate efficiently."
         right_link="Create Workspace"
-        href= '/workspaces/create'
+        href="/workspaces/create"
       />
-      <WorkspacesGrid workspaces={formattedWorkspaces} />
+      {formattedWorkspaces?.length != 0 ? (
+        <WorkspacesGrid workspaces={formattedWorkspaces ?? []} />
+      ) : (
+        <ItemsNotFound
+          title="No Workspaces"
+          link_name="Create Workspace"
+          next_page="/workspaces/create"
+          desc="ipsum dolor sielit. vitae iusto minus dolo"
+        />
+      )}
     </section>
   );
 };

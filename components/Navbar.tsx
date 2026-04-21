@@ -3,13 +3,12 @@ import { Bell, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import NotificationsBell from "./notifications/NotificationsBell";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const user = session?.user;
   
-
-  const handleNotifications = () => {};
 
   return (
     <nav className="flex items-center bg-white justify-between  p-3  border-b border-blue-200">
@@ -32,9 +31,9 @@ export default function Navbar() {
 
       <div className="flex items-center gap-4">
         {/* notifications */}
-        <button onClick={handleNotifications} className="cursor-pointer">
-          <Bell size={18} className="text-gray-600" />
-        </button>
+        
+          <NotificationsBell/>
+        
         <div className="h-6 w-px bg-gray-400" />
         {user ? (
           <div className="flex items-center gap-2">

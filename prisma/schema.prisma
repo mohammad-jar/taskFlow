@@ -34,6 +34,9 @@ model User {
   workspaceMembers WorkspaceMember[]
   sentInvites      WorkspaceInvite[] @relation("InviteSender")
 
+  notifications     Notification[] @relation("UserNotifications")
+  sentNotifications Notification[] @relation("NotificationSender")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -48,6 +51,7 @@ model Workspace {
   owner   User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members WorkspaceMember[]
   invites WorkspaceInvite[]
+  notifications Notification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,12 +87,47 @@ model WorkspaceInvite {
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   invitedBy User      @relation("InviteSender", fields: [invitedById], references: [id], onDelete: Cascade)
+  notifications Notification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
   @@index([email])
+}
+
+
+model Notification {
+  id          String           @id @default(cuid())
+  userId      String
+  senderId    String?
+  workspaceId String?
+  inviteId    String?
+
+  type        NotificationType
+  title       String
+  message     String
+  link        String?
+  isRead      Boolean          @default(false)
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user        User             @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  sender      User?            @relation("NotificationSender", fields: [senderId], references: [id], onDelete: SetNull)
+  workspace   Workspace?       @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  invite      WorkspaceInvite? @relation(fields: [inviteId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isRead])
+  @@index([workspaceId])
+  @@index([inviteId])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  WORKSPACE_INVITE_RECEIVED
+  WORKSPACE_INVITE_ACCEPTED
+  WORKSPACE_INVITE_REJECTED
 }
 
 enum WorkspaceRole {

@@ -1,38 +1,33 @@
 "use server";
-import { authOptions } from "@/auth";
+import { getCurrentUser } from "@/lib/get-current-user";
 import { prisma } from "@/lib/prisma";
 import { inviteMembersSchema } from "@/schema/workspace";
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { NotificationType, InviteStatus } from "@/generated/prisma/enums";
+import { createNotification } from "@/lib/notifications/create-user-notifications";
 
-export async function inviteMembersAction(
+export async function createInviteAction(
   prevData: TCreateState,
   formData: FormData,
   workspaceId: string,
+  workspace_name: string,
 ): Promise<TCreateState> {
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
-  if (!user) {
-    return {
-      success: false,
-      message: "You must be logged in to create a workspace.",
-      errors: {},
-    };
-  }
+  const user = await getCurrentUser();
   // 1- member in this workspace and just adimn or owner can invite another one
   // 2- invited one have account
   // 3- check invited one dosent exisit
   // 4- if invited is pending before
+  // 5- create invite
+  // 6- create notification
   const memberShip = await prisma.workspaceMember.findFirst({
     where: {
       workspaceId,
-      userId: session.user.id,
+      userId: user.id,
       role: {
         in: ["ADMIN", "OWNER"],
       },
     },
   });
-
   if (!memberShip) {
     return {
       success: false,
@@ -47,7 +42,6 @@ export async function inviteMembersAction(
     role: formData.get("role")?.toString().toUpperCase(),
     message: formData.get("message"),
   };
-
   const parsedData = inviteMembersSchema.safeParse(data);
   if (!parsedData.success) {
     const fieldErrors = parsedData.error.flatten().fieldErrors;
@@ -77,11 +71,11 @@ export async function inviteMembersAction(
   const alreadyMember = await prisma.workspaceMember.findFirst({
     where: {
       userId: haveAccount.id,
-      workspaceId
-    }
-  })
+      workspaceId,
+    },
+  });
   if (alreadyMember) {
-     return {
+    return {
       success: false,
       message: "Already founded in this workspace",
       errors: {},
@@ -92,6 +86,9 @@ export async function inviteMembersAction(
     where: {
       workspaceId,
       email,
+      status: {
+        in: ["PENDING", "ACCEPTED"],
+      },
     },
   });
   if (invitedBefore) {
@@ -102,17 +99,32 @@ export async function inviteMembersAction(
     };
   }
 
-  
-
-  await prisma.workspaceInvite.create({
+  const invite = await prisma.workspaceInvite.create({
     data: {
       email,
       role,
       message,
       workspaceId,
-      invitedById: session.user.id,
+      invitedById: user.id,
     },
   });
+  const invitedUser = await prisma.user.findFirst({
+    where: { email },
+    select: { id: true },
+  });
+
+  if (invitedUser?.id) {
+    await createNotification({
+      userId: invitedUser.id,
+      senderId: user.id,
+      workspaceId,
+      inviteId: invite.id,
+      type: NotificationType.WORKSPACE_INVITE_RECEIVED,
+      title: "Workspace invite",
+      message: `You were invited to join ${workspace_name} as ${role}`,
+      link: '/workspaces/invitations',
+    });
+  }
 
   revalidatePath(`/workspaces/${workspaceId}`);
   return {
@@ -121,25 +133,18 @@ export async function inviteMembersAction(
   };
 }
 
-
-
-
-
-
-
-export async function updateMemberAndInvite(
+export async function acceptrejectInvitationAction(
   inviteId: string,
-  inviteStatus: string,
+  inviteStatus: InviteStatus,
 ) {
   try {
-    const result = await prisma.$transaction(async (tx) => {
+    const user = await getCurrentUser();
+    await prisma.$transaction(async (tx) => {
       const invite = await tx.workspaceInvite.findUnique({
         where: { id: inviteId },
-        select: {
-          id: true,
-          email: true,
-          workspaceId: true,
-          role: true,
+        include: {
+          invitedBy: true,
+          workspace: true,
         },
       });
 
@@ -154,44 +159,61 @@ export async function updateMemberAndInvite(
         },
       });
 
-      if (inviteStatus === "ACCEPTED") {
-        const user = await tx.user.findUnique({
-          where: { email: invite.email },
-          select: { id: true },
+      if (inviteStatus === "REJECTED") {
+        // update notification isRead to be true
+        await tx.notification.updateMany({
+          where: { inviteId, userId: user.id },
+          data: {
+            isRead: true,
+          },
         });
+        
+        await createNotification({
+          userId: invite.invitedById,
+          type: NotificationType.WORKSPACE_INVITE_REJECTED,
+          title: "Invitation rejected",
+          message: `${user.name} rejected your invitation to ${invite.workspace.name}`,
+          // link: `/workspaces/${invite.workspaceId}` || null,
+          link: `/workspaces/${invite.workspaceId}`,
+          senderId: user.id || null,
+          workspaceId: null,
+          inviteId: null,
+        });
+      }
 
-        if (!user) {
-          throw new Error("User not found");
-        }
-
-        const existingMember = await tx.workspaceMember.findUnique({
-          where: {
-            workspaceId_userId: {
-              workspaceId: invite.workspaceId,
-              userId: user.id,
-            },
+      if (inviteStatus === "ACCEPTED") {
+        // add the user to workspace members
+        await tx.workspaceMember.create({
+          data: {
+            workspaceId: invite.workspaceId,
+            userId: user.id,
+            role: invite.role,
+          },
+        });
+        // update notification isRead to be true
+        await tx.notification.updateMany({
+          where: { inviteId, userId: user.id },
+          data: {
+            isRead: true,
           },
         });
 
-        if (!existingMember) {
-          await tx.workspaceMember.create({
-            data: {
-              workspaceId: invite.workspaceId,
-              userId: user.id,
-              role: invite.role,
-            },
-          });
-        }
+        // create notification as accepted invite
+        await createNotification({
+          userId: invite.invitedById,
+          type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
+          title: "Invitation accepted",
+          message: `${user.name} accepted your invitation to ${invite.workspace.name}`,
+          // link: `/workspaces/${invite.workspaceId}` || null,
+          link: '/workspaces/invitations',
+          senderId: user.id || null,
+          workspaceId: invite.workspaceId || null,
+          inviteId: inviteId || null,
+        });
       }
 
       return updatedInvite;
     });
-
-    return {
-      success: true,
-      message: "Invite updated successfully",
-      data: result,
-    };
   } catch (error) {
     console.log(error);
     return {
