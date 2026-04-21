@@ -59,6 +59,7 @@ const InviteMemberDialog = ({ workspace }: { workspace: TWorkspace }) => {
           formInfo={formInfo}
           api="invite"
           workspace_id={workspace.id}
+          workspace_name= {workspace.name}
         />
       </DialogContent>
     </Dialog>

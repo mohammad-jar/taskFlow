@@ -1,5 +1,6 @@
 "use client";
-import { updateMemberAndInvite } from "@/actions/workspace/invites/workspace-invite-actions";
+import { acceptrejectInvitationAction } from "@/actions/workspace/invites/workspace-invite-actions";
+import { InviteStatus } from "@/generated/prisma/enums";
 import { timeAgo } from "@/lib/utils";
 import { Check, X } from "lucide-react";
 import Link from "next/link";
@@ -8,8 +9,8 @@ type props = {
   invites: TInvite[];
 };
 const InviteCard = ({ invites }: props) => {
-  const handleBtn = async (status: string, inviteId: string) => {
-    await updateMemberAndInvite(inviteId, status);
+  const handleBtn = async (status: InviteStatus, inviteId: string) => {
+    await acceptrejectInvitationAction(inviteId, status);
   };
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -74,7 +75,7 @@ const InviteCard = ({ invites }: props) => {
                 href={`/workspaces/${invite.workspace.id}`}
                 className="text-blue-600 border border-blue-300 rounded-md px-4 py-2  hover:bg-blue-300 transform"
               >
-                Go to workspace
+                Go to workspace 
               </Link>
             </div>
           )}

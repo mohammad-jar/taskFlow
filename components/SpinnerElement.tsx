@@ -1,8 +1,11 @@
 const SpinnerElement = () => {
-    return ( <span
+  return (
+    <span
       aria-hidden="true"
-      className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-    /> );
-}
+      className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500"
+    />
+  );
+};
+
  
 export default SpinnerElement;
