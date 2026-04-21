@@ -1,6 +1,7 @@
 'use client'
 import Link from "next/link";
 import { Plus, MoreVertical } from "lucide-react";
+import { formatName } from "@/lib/utils";
 
 type WorkspaceItem = {
   id: string;
@@ -33,7 +34,7 @@ export default function WorkspacesGrid({
             >
               <div className="mb-2 flex items-center  justify-between">
                 <span className='bg-amber-100 text-amber-700 text-center min-h-20 min-w-20 rounded-md text-md font-semibold '>
-                  {workspace.name.slice(0, 2).toUpperCase()}
+                  {formatName(workspace.name)}
                 </span>
 
                 <button

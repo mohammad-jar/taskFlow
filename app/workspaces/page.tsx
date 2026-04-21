@@ -24,7 +24,8 @@ const WorkspacesPage = async () => {
   return (
     <section className="p-5 flex-1">
       <PageHeader
-        title="Workspaces"
+        title1="Workspaces"
+        title2="Workspaces"
         desc="Organize your teams and collaborate efficiently."
         right_link="Create Workspace"
         href="/workspaces/create"

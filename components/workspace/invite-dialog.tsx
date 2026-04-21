@@ -42,7 +42,7 @@ const InviteMemberDialog = ({ workspace }: { workspace: TWorkspace }) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="inline-flex cursor-pointer h-8 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 text-md font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex cursor-pointer h-8 items-center justify-center gap-2 rounded-md bg-blue-400 px-4 text-md font-medium text-white transition hover:bg-blue-500 hover:text-white duration-150"
         >
           <Plus size={20} />
           Invite Member
