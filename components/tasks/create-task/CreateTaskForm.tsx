@@ -1,7 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
-import { ClipboardList, AlignLeft, Flag, CalendarDays } from "lucide-react";
+import { useActionState, useEffect, useMemo, useRef } from "react";
+import {
+  ClipboardList,
+  AlignLeft,
+  Flag,
+  CalendarDays,
+  UserRound,
+} from "lucide-react";
 
 import SubmitButton from "./SubmitButton";
 import SectionIcon from "./SectionIcon";
@@ -17,13 +23,24 @@ const initialState = {
     description: "",
     priority: "",
     dueDate: "",
+    assigneeId: "",
+    status: "TODO",
+    workspaceId: "",
   },
   errors: {},
 };
 
+interface CreateTaskFormProps {
+  workspaceId?: string;
+  workspaceName?: string;
+  members?: TMember[];
+}
 
-
-const CreateTaskForm = () => {
+const CreateTaskForm = ({
+  workspaceId = "",
+  workspaceName = "Design Team",
+  members = [],
+}: CreateTaskFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction] = useActionState(createTaskAction, initialState);
 
@@ -37,6 +54,13 @@ const CreateTaskForm = () => {
       toast.error(state.message);
     }
   }, [state.success, state.message]);
+
+  const memberOptions = useMemo(() => {
+    return [
+      { id: "", name: "Unassigned", role: "No one is assigned" },
+      ...members,
+    ];
+  }, [members]);
   return (
     <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
       <form ref={formRef} action={formAction} className="space-y-2">
@@ -54,11 +78,13 @@ const CreateTaskForm = () => {
                 name="title"
                 type="text"
                 placeholder="e.g. Design Login Page"
-                className={getElementClassName('input')}
+                className={getElementClassName("input")}
                 defaultValue={state.values.title}
               />
               {state.errors?.title && (
-                <p className={getElementClassName('error')}>{state.errors.title}</p>
+                <p className={getElementClassName("error")}>
+                  {state.errors.title}
+                </p>
               )}
             </div>
           </div>
@@ -75,11 +101,45 @@ const CreateTaskForm = () => {
               <textarea
                 name="description"
                 placeholder="Add task description, details, or notes..."
-                className={getElementClassName('textarea')}
+                className={getElementClassName("textarea")}
                 defaultValue={state.values.description}
               />
               {state.errors?.description && (
-                <p className={getElementClassName('error')}>{state.errors.description}</p>
+                <p className={getElementClassName("error")}>
+                  {state.errors.description}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <SectionIcon
+              bgClassName="bg-emerald-50"
+              iconClassName="text-emerald-600"
+            >
+              <UserRound size={22} />
+            </SectionIcon>
+
+            <div className="flex-1">
+              <label className="mb-2 block text-sm font-medium text-slate-800">
+                Assignee
+              </label>
+              <select
+                name="assigneeId"
+                className={getElementClassName("select")}
+                defaultValue={state.values.assignee}
+              >
+                {memberOptions.map((member) => (
+                  <option key={member.id || "unassigned"} value={member.id}>
+                    {member.name}
+                    {member.role ? ` - ${member.role}` : ""}
+                  </option>
+                ))}
+              </select>
+              {state.errors?.assignee && (
+                <p className={getElementClassName("error")}>
+                  {state.errors.assignee}
+                </p>
               )}
             </div>
           </div>
@@ -98,7 +158,7 @@ const CreateTaskForm = () => {
               </label>
               <select
                 name="priority"
-                className={getElementClassName('select')}
+                className={getElementClassName("select")}
                 defaultValue={state.values.priority}
               >
                 <option value="" disabled>
@@ -109,7 +169,9 @@ const CreateTaskForm = () => {
                 <option value="high">High</option>
               </select>
               {state.errors?.priority && (
-                <p className={getElementClassName('error')}>{state.errors.priority}</p>
+                <p className={getElementClassName("error")}>
+                  {state.errors.priority}
+                </p>
               )}
             </div>
           </div>
@@ -129,11 +191,13 @@ const CreateTaskForm = () => {
               <input
                 name="dueDate"
                 type="date"
-                className={getElementClassName('input')}
+                className={getElementClassName("input")}
                 defaultValue={state.values.dueDate}
               />
               {state.errors?.dueDate && (
-                <p className={getElementClassName('error')}>{state.errors.dueDate}</p>
+                <p className={getElementClassName("error")}>
+                  {state.errors.dueDate}
+                </p>
               )}
             </div>
           </div>
@@ -147,7 +211,7 @@ const CreateTaskForm = () => {
             Cancel
           </button>
 
-          <SubmitButton name='Create Task' />
+          <SubmitButton name="Create Task" />
         </div>
       </form>
     </div>

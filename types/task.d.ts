@@ -3,6 +3,7 @@ type CreateTaskValues = {
   description: string;
   priority: string;
   dueDate: string;
+  assignee?: string;
 };
 
 type CreateTaskState = {
