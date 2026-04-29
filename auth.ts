@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { comparePassword } from "@/lib/password";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+
   session: {
     strategy: "jwt",
   },
