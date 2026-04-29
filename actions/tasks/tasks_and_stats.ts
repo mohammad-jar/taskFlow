@@ -1,9 +1,16 @@
 import { prisma } from "@/lib/prisma";
+import {
+  Prisma,
+  TaskPriority,
+  TaskStatus,
+} from "@/generated/prisma/client";
 
 const TASKS_PER_PAGE = 3;
+const TASK_STATUSES = Object.values(TaskStatus);
+const TASK_PRIORITIES = Object.values(TaskPriority);
 
-export async function getUserTasks(
-  userId: string,
+export async function getWorkspaceTasks(
+  workspaceId: string,
   page: number = 1,
   status?: string,
   search?: string,
@@ -13,10 +20,10 @@ export async function getUserTasks(
   const safePage = Math.max(1, Number(page) || 1);
   const skip = (safePage - 1) * TASKS_PER_PAGE;
 
-  const whereQuery = {
-    userId,
-    ...(status ? { status: status as any } : {}),
-    ...(priority ? { priority: priority as any } : {}),
+  const whereQuery: Prisma.TaskWhereInput = {
+    workspaceId,
+    ...(isTaskStatus(status) ? { status } : {}),
+    ...(isTaskPriority(priority) ? { priority } : {}),
     ...(search?.trim()
       ? {
           OR: [
@@ -58,19 +65,19 @@ export async function getUserTasks(
   };
 }
 
-export async function getTasksStats(userId: string) {
+export async function getTasksStats(workspaceId: string) {
   const [all, pending, inProgress, completed] = await Promise.all([
     prisma.task.count({
-      where: { userId },
+      where: { workspaceId },
     }),
     prisma.task.count({
-      where: { userId, status: "PENDING" },
+      where: { workspaceId, status: "PENDING" },
     }),
     prisma.task.count({
-      where: { userId, status: "IN_PROGRESS" },
+      where: { workspaceId, status: "IN_PROGRESS" },
     }),
     prisma.task.count({
-      where: { userId, status: "COMPLETED" },
+      where: { workspaceId, status: "COMPLETED" },
     }),
   ]);
 
@@ -82,7 +89,7 @@ export async function getTasksStats(userId: string) {
   };
 }
 
-const getSortOption = (sort?: string) => {
+const getSortOption = (sort?: string): Prisma.TaskOrderByWithRelationInput => {
   switch (sort) {
     case "oldest":
       return { createdAt: "asc" };
@@ -100,3 +107,11 @@ const getSortOption = (sort?: string) => {
       return { createdAt: "desc" }; // newest
   }
 };
+
+function isTaskStatus(status?: string): status is TaskStatus {
+  return TASK_STATUSES.includes(status as TaskStatus);
+}
+
+function isTaskPriority(priority?: string): priority is TaskPriority {
+  return TASK_PRIORITIES.includes(priority as TaskPriority);
+}

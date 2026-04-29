@@ -34,15 +34,17 @@ export default function CreateForm({
   workspace_id,
   workspace_name,
 }: CreateFormProps) {
-    if (!workspace_id && !workspace_name && api === 'invite') {
-        return null;
-    }
   const formRef = useRef<HTMLFormElement>(null);
   const selectedAction =
     api === "workspace"
       ? createWorkspaceAction
       : (prevState: TCreateState, formData: FormData) =>
-          createInviteAction(prevState, formData, workspace_id, workspace_name);
+          createInviteAction(
+            prevState,
+            formData,
+            workspace_id ?? "",
+            workspace_name ?? "",
+          );
 
   const [state, formAction, isPending] = useActionState(
     selectedAction,
@@ -60,12 +62,16 @@ export default function CreateForm({
     }
   }, [state]);
 
+  if (!workspace_id && !workspace_name && api === "invite") {
+    return null;
+  }
+
   return (
-    <div className={`${api === 'invite' ? '': 'mx-auto w-1/2 max-w-2xl'}`}>
+    <div className={`${api === "invite" ? "" : "mx-auto sm:w-1/2 max-w-2xl"}`}>
       <form
         ref={formRef}
         action={formAction}
-        className={`${api === 'invite' ? '': 'space-y-5 rounded-lg border bg-white p-6 shadow-sm'}`}
+        className={`${api === "invite" ? "" : "space-y-5 rounded-lg border bg-white p-6 shadow-sm"}`}
       >
         <h2 className="text-3xl font-semibold text-slate-900 mb-2">{title}</h2>
 

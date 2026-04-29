@@ -14,6 +14,7 @@ import {
 import EditTaskForm from "./EditTaskForm";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "../create-task/SubmitButton";
+import type { Task } from "@/generated/prisma/client";
 
 
 export function EditTaskSheet({ task }: {task:Task}) {

@@ -3,7 +3,8 @@ type CreateTaskValues = {
   description: string;
   priority: string;
   dueDate: string;
-  assignee?: string;
+  assigneeId?: string;
+  workspaceId?:string;
 };
 
 type CreateTaskState = {
@@ -16,8 +17,7 @@ type CreateTaskState = {
     project?: string;
     priority?: string;
     dueDate?: string;
-    assignee?: string;
-    tags?: string;
+    assigneeId?: string;
   };
 };
 
@@ -32,17 +32,16 @@ type TStatusProps = {
     expired?: number;
 };
 
-type Task = {
+type TBoardTask = {
   id: string;
   title: string;
-  description: string | null;
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
+  description?: string | null;
   priority: "LOW" | "MEDIUM" | "HIGH";
-  dueDate: Date | null;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-
+  dueDate?: Date | string | null;
+  assignee?: {
+    name?: string | null;
+    image?: string | null;
+  } | null;
 };
 
 

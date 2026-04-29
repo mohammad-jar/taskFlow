@@ -18,6 +18,7 @@ import { updateTaskStatus } from "@/actions/tasks/updateTaskAcrtion";
 import { TaskStatus } from "@/generated/prisma/enums";
 import DeleteTaskDialog from "./deleteTaskDialog";
 import { EditTaskSheet } from "./edit-task/EditTaskSheet";
+import type { Task } from "@/generated/prisma/client";
 
 const statuses = [
   { label: "Pending", value: TaskStatus.PENDING },

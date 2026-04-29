@@ -1,5 +1,6 @@
 
 import LoginForm from "@/components/auth/LoginForm";
+import { Suspense } from "react";
 const LoginPage = () => {
   return (
     <main className="font-sans">
@@ -11,7 +12,9 @@ const LoginPage = () => {
                 Start your workspace
               </h2>
 
-              <LoginForm />
+              <Suspense fallback={null}>
+                <LoginForm />
+              </Suspense>
             </div>
           </div>
         </section>

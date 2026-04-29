@@ -22,7 +22,8 @@ const InvitationsPage = async ({searchParams}: TSearchPageProps) => {
   return (
     <section className="p-5 bg-slate-100 min-h-screen ">
       <PageHeader
-        title="Invitations"
+        title1="Invitations"
+        title2="Invitations"
         desc="Manage Your Workspace Invitations."
       />
 

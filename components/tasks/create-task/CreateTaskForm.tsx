@@ -1,6 +1,5 @@
 "use client";
-
-import { useActionState, useEffect, useMemo, useRef } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import {
   ClipboardList,
   AlignLeft,
@@ -8,7 +7,6 @@ import {
   CalendarDays,
   UserRound,
 } from "lucide-react";
-
 import SubmitButton from "./SubmitButton";
 import SectionIcon from "./SectionIcon";
 import { createTaskAction } from "@/actions/tasks/createtask";
@@ -25,24 +23,22 @@ const initialState = {
     dueDate: "",
     assigneeId: "",
     status: "TODO",
-    workspaceId: "",
   },
   errors: {},
 };
-
 interface CreateTaskFormProps {
   workspaceId?: string;
-  workspaceName?: string;
   members?: TMember[];
+  user_id: string;
 }
 
-const CreateTaskForm = ({
-  workspaceId = "",
-  workspaceName = "Design Team",
-  members = [],
-}: CreateTaskFormProps) => {
+const CreateTaskForm = ({ workspaceId, members = [], user_id }: CreateTaskFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction] = useActionState(createTaskAction, initialState);
+  
+  const filteredmembers = members.filter((member) => 
+    member?.user?.id !== user_id
+  )
 
   useEffect(() => {
     if (state.success && state.message) {
@@ -54,16 +50,10 @@ const CreateTaskForm = ({
       toast.error(state.message);
     }
   }, [state.success, state.message]);
-
-  const memberOptions = useMemo(() => {
-    return [
-      { id: "", name: "Unassigned", role: "No one is assigned" },
-      ...members,
-    ];
-  }, [members]);
   return (
     <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
       <form ref={formRef} action={formAction} className="space-y-2">
+        <input type="hidden" name="workspaceId" value={workspaceId ?? ""} />
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div className="flex gap-4">
             <SectionIcon bgClassName="bg-blue-50" iconClassName="text-blue-600">
@@ -127,18 +117,17 @@ const CreateTaskForm = ({
               <select
                 name="assigneeId"
                 className={getElementClassName("select")}
-                defaultValue={state.values.assignee}
+                defaultValue={state.values.assigneeId}
               >
-                {memberOptions.map((member) => (
-                  <option key={member.id || "unassigned"} value={member.id}>
-                    {member.name}
-                    {member.role ? ` - ${member.role}` : ""}
+                {filteredmembers.map((member) => (
+                  <option key={member.id} value={member?.user?.id || ''}>
+                    {member.user?.name} - {member.role}
                   </option>
                 ))}
               </select>
-              {state.errors?.assignee && (
+              {state.errors?.assigneeId && (
                 <p className={getElementClassName("error")}>
-                  {state.errors.assignee}
+                  {state.errors.assigneeId}
                 </p>
               )}
             </div>

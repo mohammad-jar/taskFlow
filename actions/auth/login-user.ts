@@ -28,6 +28,9 @@ export async function loginUser(
   if (!user) {
     return { error: "email not exisit..." };
   }
+  if (!user.password) {
+    return { error: "This account does not have a password login." };
+  }
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
   if (!isPasswordCorrect) {

@@ -35,17 +35,25 @@ const cardsConfig: TCardConfig[] = [
     iconBgClass: "bg-rose-100",
   },
 ];
-
-const DashboardCardsSection = () => {
-  // replace it with api endoint values
+interface props {
+  tasksCount: {
+    totalTasks?: number;
+    pendingTasks?: number;
+    inProgressTasks?: number;
+    completedTasks?: number;
+  };
+}
+const DashboardCardsSection = ({ tasksCount }: props) => {
+  const { totalTasks, pendingTasks, inProgressTasks, completedTasks } =
+    tasksCount;
   const stats: TDashboardStats = {
-    totalTasks: 24,
-    completedTasks: 8,
-    inProgressTasks: 6,
-    pendingTasks: 10,
+    totalTasks: totalTasks || 0,
+    completedTasks: completedTasks || 0,
+    inProgressTasks: inProgressTasks || 0,
+    pendingTasks: pendingTasks || 0,
   };
   return (
-    <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <div className="mt-5 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
       {cardsConfig.map((card) => (
         <DashboardCard
           key={card.key}

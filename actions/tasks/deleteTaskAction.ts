@@ -10,12 +10,15 @@ export async function deleteTaskAction(taskId: string) {
     if (!session) {
       return { success: false, message: "login first to be able delete" };
     }
-    await prisma.task.delete({
+    const deletedTask = await prisma.task.deleteMany({
       where: {
-        userId: session.user.id,
         id: taskId,
+        createdById: session.user.id,
       },
     });
+    if (deletedTask.count === 0) {
+      return { success: false, message: "Task not found or not allowed." };
+    }
     revalidatePath('/tasks')
 
     return { success: true, message: "Task Deleted Successfully." };

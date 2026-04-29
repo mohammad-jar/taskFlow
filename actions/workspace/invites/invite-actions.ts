@@ -43,11 +43,15 @@ export async function getUserInvites(email: string, status?: string) {
     if (!isValidStatus) {
       return { invites: [] };
     }
+    const inviteStatus: InviteStatus | undefined =
+      normalizedStatus && isInviteStatus(normalizedStatus)
+        ? normalizedStatus
+        : undefined;
 
     const invites = await prisma.workspaceInvite.findMany({
       where: {
         email,
-        ...(normalizedStatus ? { status: normalizedStatus } : {}),
+        ...(inviteStatus ? { status: inviteStatus } : {}),
       },
       select: {
         id: true,

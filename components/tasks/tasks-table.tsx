@@ -1,19 +1,22 @@
 'use client'
-import { CalendarDays, MoreVertical } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { TaskActions } from "./TaskActions";
 import { PaginationTasks } from "../Pagination";
 import {  useSearchParams } from "next/navigation";
+import type { Task } from "@/generated/prisma/client";
 
 type TasksTableProps = {
   tasks: Task[];
   totalPages: number;
+  workspaceId: string;
 };
 
 const statusStyles = {
   PENDING: "bg-red-50 text-red-600",
   IN_PROGRESS: "bg-yellow-50 text-yellow-700",
+  REVIEW: "bg-blue-50 text-blue-600",
   COMPLETED: "bg-green-50 text-green-600",
 };
 
@@ -26,6 +29,7 @@ const priorityStyles = {
 const statusLabels = {
   PENDING: "Pending",
   IN_PROGRESS: "In Progress",
+  REVIEW: "Review",
   COMPLETED: "Completed",
 };
 
@@ -35,10 +39,10 @@ const priorityLabels = {
   HIGH: "High",
 };
 
-const TasksTable = ({ tasks , totalPages}: TasksTableProps) => {
+const TasksTable = ({ tasks , totalPages, workspaceId}: TasksTableProps) => {
   const searchParams = useSearchParams();
   
-  const currentPage= Number(searchParams.get('page'));
+  const currentPage= Number(searchParams.get('page') || 1);
   return (
     <div className="overflow-hidden rounded-2xl  bg-white shadow-sm px-4 py-2">
       <div className="overflow-x-auto">
@@ -116,7 +120,7 @@ const TasksTable = ({ tasks , totalPages}: TasksTableProps) => {
           Showing 1 to {tasks.length} tasks
         </p>
 
-        <PaginationTasks totalPages={totalPages} currentPage={currentPage} />
+        <PaginationTasks workspaceId={workspaceId} totalPages={totalPages} currentPage={currentPage} />
 
       </div>
     </div>

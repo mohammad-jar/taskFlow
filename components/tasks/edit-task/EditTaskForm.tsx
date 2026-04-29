@@ -5,6 +5,7 @@ import SectionIcon from "../create-task/SectionIcon";
 import { formatDate, getElementClassName } from "@/lib/utils";
 import SubmitButton from "../create-task/SubmitButton";
 import toast from "react-hot-toast";
+import type { Task } from "@/generated/prisma/client";
 
 const initialState = {
   success: false,

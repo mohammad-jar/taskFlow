@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import {
@@ -10,7 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import SpinnerElement from "../SpinnerElement";
 import { getSocket } from "@/lib/socket-client";
 
-const NotificationsBell = ({ userId }: {userId : string}) => {
+const NotificationsBell = ({ userId }: { userId: string }) => {
   const [notifications, setNotifications] = useState<TNotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -18,6 +20,7 @@ const NotificationsBell = ({ userId }: {userId : string}) => {
   const fetchUnreadNotif = useCallback(async () => {
     try {
       setLoading(true);
+
       const res = await fetch("/api/notifications");
 
       if (!res.ok) {
@@ -25,6 +28,7 @@ const NotificationsBell = ({ userId }: {userId : string}) => {
       }
 
       const data = await res.json();
+
       setNotifications(data.notifications || []);
       setUnreadCount(data.unreadNotificationsCount || 0);
     } catch (error) {
@@ -63,11 +67,12 @@ const NotificationsBell = ({ userId }: {userId : string}) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative flex h-10 w-10 items-center justify-center bg-white">
-          <Bell size={22} className=" text-slate-600" />
+        <button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white transition hover:bg-slate-100 md:h-10 md:w-10">
+          <Bell size={20} className="text-slate-600 md:size-[22px]" />
+
           {unreadCount > 0 && (
-            <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[12px] font-semibold text-white">
-              {unreadCount}
+            <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-semibold leading-none text-white">
+              {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </button>
@@ -75,35 +80,46 @@ const NotificationsBell = ({ userId }: {userId : string}) => {
 
       <DropdownMenuContent
         align="end"
-        className="w-95 rounded-2xl border border-slate-200 bg-white p-0 shadow-xl"
+        sideOffset={10}
+        className="
+          w-[calc(100vw-24px)]
+          max-w-[380px]
+          rounded-2xl
+          border border-slate-200
+          bg-white
+          p-0
+          shadow-xl
+          sm:w-95
+        "
       >
         <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
           <h3 className="text-sm font-semibold text-slate-900">
             Notifications
           </h3>
-          {/* <MarkAllNotificationsButton /> */}
+
+          {unreadCount > 0 && (
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
+              {unreadCount} unread
+            </span>
+          )}
         </div>
 
-        <div className="max-h-90 overflow-y-auto">
+        <div className="max-h-[60vh] overflow-y-auto sm:max-h-90">
           {loading ? (
-            <span className="flex justify-center items-center">
+            <div className="flex min-h-32 items-center justify-center">
               <SpinnerElement />
-            </span>
+            </div>
+          ) : notifications.length > 0 ? (
+            notifications.map((notification) => (
+              <NotificationListItem
+                key={notification.id}
+                notification={notification}
+              />
+            ))
           ) : (
-            <>
-              {notifications.length > 0 ? (
-                notifications.map((notification) => (
-                  <NotificationListItem
-                    key={notification.id}
-                    notification={notification}
-                  />
-                ))
-              ) : (
-                <div className="px-4 py-8 text-center text-sm text-slate-500">
-                  No notifications yet
-                </div>
-              )}
-            </>
+            <div className="px-4 py-8 text-center text-sm text-slate-500">
+              No notifications yet
+            </div>
           )}
         </div>
 
