@@ -9,7 +9,7 @@
     "dev:webpack": "cross-env NODE_ENV=development node server.mjs",
     "postinstall": "prisma generate",
     "prebuild": "prisma generate",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "cross-env NODE_ENV=production node server.mjs",
     "lint": "eslint",
     "clean:next": "node -e \"const fs=require('fs');const targets=['.next/dev/cache','.next/cache','.next/dev/trace','.next/dev/trace-turbopack'];for(const p of targets){try{fs.rmSync(p,{recursive:true,force:true});}catch{}}console.log('Cleaned Next dev caches');\""
