@@ -1,65 +1,62 @@
 "use client";
-
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useSearchParams } from "next/navigation";
 
 export function PaginationTasks({
   currentPage,
   totalPages,
+  workspaceId,
 }: {
   currentPage: number;
   totalPages: number;
+  workspaceId: string;
 }) {
-  const previousPage = currentPage - 1;
-  const nextPage = currentPage + 1;
-  
+  const searchParams = useSearchParams();
+  const createPageURL = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
 
-  const getPageNumbers = () => {
-    let pages = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-
-    return pages;
+    return `/workspaces/${workspaceId}/tasks?${params.toString()}`;
   };
 
   return (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""}`}
-            href={`/tasks?page=${previousPage}`}
-          />
-        </PaginationItem>
-        {getPageNumbers().map((page) => (
+    <PaginationContent>
+      <PaginationItem>
+        <PaginationPrevious
+          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+          href={createPageURL(currentPage - 1)}
+        />
+      </PaginationItem>
+
+      {Array.from({ length: totalPages }).map((_, i) => {
+        const page = i + 1;
+        return (
           <PaginationItem key={page}>
             <PaginationLink
-              href={`/tasks?page=${page}`}
+              href={createPageURL(page)}
               isActive={currentPage === page}
             >
               {page}
             </PaginationLink>
           </PaginationItem>
-        ))}
+        );
+      })}
 
-        
-
-        <PaginationItem>
-          <PaginationNext
-            className={`${totalPages - currentPage === 0 ? "pointer-events-none opacity-50" : ""}`}
-            href={`/tasks?page=${nextPage}`}
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+      <PaginationItem>
+        <PaginationNext
+          className={
+            currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+          }
+          href={createPageURL(currentPage + 1)}
+        />
+      </PaginationItem>
+    </PaginationContent>
   );
 }

@@ -1,12 +1,3 @@
-// type TCreateWorkspaceState = {
-//     success: boolean;
-//   message: string;
-//   errors?: {
-//     name?: string;
-//     description?: string;
-//     icon?: string;
-//   };
-// }
 
 type TCreateState = {
   success: boolean;
@@ -18,13 +9,19 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 type TMember = {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  image: string | null;
-  role: "OWNER" | "ADMIN" | "MEMBER";
-  joinedAt: string;
+  id?: string;
+  userId?: string;
+  name?: string | null;
+  image?: string | null;
+  email?: string | null;
+  user?: {
+    id:string;
+    name: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+  role?: "OWNER" | "ADMIN" | "MEMBER";
+  joinedAt?: string;
 };
 
 type TWorkspace = {
@@ -46,7 +43,6 @@ type TInvite = {
     name: string | null;
   };
 };
-
 
 type TInviteRole = {
   role: "OWNER" | "ADMIN" | "MEMBER";

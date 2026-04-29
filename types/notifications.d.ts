@@ -7,6 +7,7 @@ type TCreateNotification = {
   senderId?: string | null;
   workspaceId?: string | null;
   inviteId?: string | null;
+  taskId?: string | null;
 };
 
 type TNotificationItem = {

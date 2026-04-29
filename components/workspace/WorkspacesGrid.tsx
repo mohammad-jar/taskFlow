@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Link from "next/link";
 import { Plus, MoreVertical } from "lucide-react";
 import { formatName } from "@/lib/utils";
@@ -24,7 +24,6 @@ export default function WorkspacesGrid({
   workspaces: WorkspaceItem[];
 }) {
   return (
-    <div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {workspaces.map((workspace) => {
           return (
@@ -33,7 +32,7 @@ export default function WorkspacesGrid({
               className="rounded-md border border-slate-100 bg-white p-5 shadow-sm transition hover:shadow-md"
             >
               <div className="mb-2 flex items-center  justify-between">
-                <span className='bg-amber-100 text-amber-700 text-center min-h-20 min-w-20 rounded-md text-md font-semibold '>
+                <span className="bg-amber-100 text-amber-700 flex items-center justify-center min-h-16 min-w-16 rounded-md text-md font-semibold ">
                   {formatName(workspace.name)}
                 </span>
 
@@ -64,6 +63,6 @@ export default function WorkspacesGrid({
           );
         })}
       </div>
-    </div>
+
   );
 }

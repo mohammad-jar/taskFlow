@@ -1,4 +1,5 @@
-"use cliet";
+"use client";
+
 import { MoreVertical } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
@@ -7,23 +8,27 @@ type WorkspaceProps = {
   currentUserId: string;
   members: TMember[];
 };
+
 const roleStyles = {
-  OWNER: "bg-blue-50 text-blue-600 px-2 border border-blue-200 py-1",
+  OWNER: "bg-blue-50 text-blue-600 border border-blue-200",
   ADMIN: "bg-violet-50 text-violet-700",
   MEMBER: "bg-emerald-50 text-emerald-700",
 };
+
 export default function WorkspaceMembersView({
   currentUserId,
   members,
 }: WorkspaceProps) {
   const formatName = (name: string) => {
-    const nameArray = name.split(" ");
-    return `${nameArray[0]} ${nameArray[1][0]}`;
+    const parts = name?.split(" ") || [];
+    return parts.length > 1 ? `${parts[0]} ${parts[1][0]}` : name;
   };
 
   return (
-    <div className="mt-2 overflow-hidden rounded-2xl bg-white px-4 py-2 shadow-lg">
-      <div className="overflow-x-auto">
+    <div className="mt-2 rounded-2xl bg-white shadow-lg">
+
+      {/* 🟢 Desktop Table */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="min-w-full">
           <thead className="bg-slate-100">
             <tr className="text-left text-sm text-slate-500">
@@ -46,31 +51,35 @@ export default function WorkspaceMembersView({
                 </td>
               </tr>
             ) : (
-              members.map((member) => (
+              members.map((member) => {
+                const role = member.role ?? "MEMBER";
+
+                return (
                 <tr
                   key={member.id}
-                  className="border-b border-gray-100 hover:bg-slate-50 last:border-b-0"
+                  className="border-b border-gray-100 hover:bg-slate-50"
                 >
-                  <td className="px-3 py-4">
+                  <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <Image
                         src={member.image || "/profile.png"}
-                        alt={member.name}
-                        width={30}
-                        height={30}
+                        alt="user"
+                        width={32}
+                        height={32}
                         className="rounded-full object-cover"
                       />
 
-                      <p className="font-semibold text-slate-900">
-                        {formatName(member.name)}
-                      </p>
-                      {currentUserId === member.userId && (
-                        <p
-                          className={`rounded-md text-sm  bg-blue-50 text-blue-600 px-2 border border-blue-200 py-1`}
-                        >
-                          you
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-slate-900">
+                          {formatName(member.name || "")}
                         </p>
-                      )}
+
+                        {currentUserId === member.userId && (
+                          <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs text-blue-600">
+                            you
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </td>
 
@@ -80,29 +89,95 @@ export default function WorkspaceMembersView({
 
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex rounded-md  py-1 text-sm font-medium ${roleStyles[member.role]}`}
+                      className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium ${
+                        roleStyles[role]
+                      }`}
                     >
-                      {member.role.toLowerCase()}
+                      {role.toLowerCase()}
                     </span>
                   </td>
 
                   <td className="px-6 py-4 text-sm text-slate-600">
-                    {formatDate(member.joinedAt)}
+                    {formatDate(member.joinedAt || "")}
                   </td>
 
                   <td className="px-6 py-4">
-                    <button
-                      type="button"
-                      className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
-                    >
+                    <button className="rounded-lg p-2 hover:bg-slate-100">
                       <MoreVertical size={18} />
                     </button>
                   </td>
                 </tr>
-              ))
+              )})
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* 🔵 Mobile Cards */}
+      <div className="md:hidden flex flex-col gap-3 p-3">
+        {members.length === 0 ? (
+          <div className="text-center text-sm text-slate-500 py-6">
+            No members found.
+          </div>
+        ) : (
+          members.map((member) => {
+            const role = member.role ?? "MEMBER";
+
+            return (
+            <div
+              key={member.id}
+              className="rounded-xl border border-slate-200 p-4 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={member.image || "/profile.png"}
+                    alt="user"
+                    width={36}
+                    height={36}
+                    className="rounded-full object-cover"
+                  />
+
+                  <div>
+                    <p className="font-semibold text-slate-900">
+                      {formatName(member.name || "")}
+                    </p>
+
+                    <p className="text-xs text-slate-500">
+                      {member.email}
+                    </p>
+                  </div>
+                </div>
+
+                <button className="p-2 rounded-lg hover:bg-slate-100">
+                  <MoreVertical size={18} />
+                </button>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between">
+                <span
+                  className={`rounded-md px-2 py-0.5 text-xs font-medium ${
+                    roleStyles[role]
+                  }`}
+                >
+                  {role.toLowerCase()}
+                </span>
+
+                <span className="text-xs text-slate-500">
+                  {formatDate(member.joinedAt || "")}
+                </span>
+              </div>
+
+              {currentUserId === member.userId && (
+                <div className="mt-2">
+                  <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs text-blue-600">
+                    you
+                  </span>
+                </div>
+              )}
+            </div>
+          )})
+        )}
       </div>
     </div>
   );

@@ -14,12 +14,11 @@ export const createTaskSchema = z.object({
     .optional()
     .or(z.literal("")),
 
+  assigneeId: z.string().trim().min(1, "assignee is required."),
+
   priority: z.enum(["LOW", "MEDIUM", "HIGH"], {
     error: "Please select a valid priority.",
   }),
-
-  dueDate: z
-    .string()
-    .trim()
-    .min(1, "Due date is required."),
+  workspaceId: z.string().trim().min(1, "Due date is required."),
+  dueDate: z.string().trim().min(1, "Due date is required."),
 });

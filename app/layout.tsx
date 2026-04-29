@@ -32,7 +32,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-screen">
-        <main className="flex  w-full bg-blue-50 ">
+        <main className="flex w-full bg-blue-50 ">
           <SessionProviderComp>
             <SideBar />
 

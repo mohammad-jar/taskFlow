@@ -1,13 +1,15 @@
 import DashboardCardsSection from "@/components/cards/DashboardCardsSection";
 import TasksStatusChart from "@/components/charts/TasksStatusChart";
+import PageHeader from "@/components/page-header";
+import getTasksCount from "@/lib/getTasksCount";
 
-const DashboardPage = () => {
+const DashboardPage = async() => {
+  const tasksCount = await getTasksCount()
   return <div>
     <div className="p-3">
-        <h1 className="text-[22px] font-semibold text-[#101828]">DashboardOverview</h1>
-        <p className="mt-1 text-[#667085] text-md">Welcome back! Here's whats happening with your tasks.</p>
-        <DashboardCardsSection />
-        <TasksStatusChart />
+        <PageHeader title1="dashboard overview" title2="Dashboard Overview" desc="Welcome back! Here's whats happening with your tasks."/>
+        <DashboardCardsSection tasksCount={tasksCount}/>
+        <TasksStatusChart tasksCount={tasksCount}/>
     </div>
   </div>;
 };

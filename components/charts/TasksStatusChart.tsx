@@ -1,5 +1,4 @@
 "use client";
-
 import {
   ResponsiveContainer,
   BarChart,
@@ -10,14 +9,20 @@ import {
   Tooltip,
   Cell,
 } from "recharts";
-
-const data = [
-  { status: "Completed", count: 8 },
-  { status: "In Progress", count: 6 },
-  { status: "Pending", count: 10 },
+interface props {
+  tasksCount: {
+    totalTasks?: number;
+    pendingTasks?: number;
+    inProgressTasks?: number;
+    completedTasks?: number;
+  };
+}
+const TasksStatusChart = ({ tasksCount }: props) => {
+  const data = [
+  { status: "Completed", count: tasksCount.completedTasks},
+  { status: "In Progress", count: tasksCount.inProgressTasks },
+  { status: "Pending", count: tasksCount.pendingTasks },
 ];
-
-const TasksStatusChart = () => {
   return (
     <div className="w-full mt-5 md:w-1/2 bg-white rounded-2xl p-6 shadow-md border border-gray-100">
       <div className="mb-5">
