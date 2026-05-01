@@ -49,7 +49,7 @@ const TasksTable = ({ tasks , totalPages, workspaceId}: TasksTableProps) => {
         <table className="min-w-full">
           <thead className=" bg-slate-100 ">
             <tr className="text-left text-sm text-slate-500 ">
-              <th className="px-6 py-4 font-medium">Task</th>
+              <th className="px-6 py-4 font-medium min-w-30 max-w-40">Task</th>
               <th className="px-6 py-4 font-medium">Priority</th>
               <th className="px-6 py-4 font-medium">Due Date</th>
               <th className="px-6 py-4 font-medium">Status</th>
@@ -68,7 +68,7 @@ const TasksTable = ({ tasks , totalPages, workspaceId}: TasksTableProps) => {
               tasks.map((task) => (
                 <tr key={task.id} className="border-b border-gray-100 hover:bg-slate-50 last:border-b-0">
                   <td className="px-6 py-4 ">
-                    <Link href={`/`} className="space-y-1">
+                    <Link href={`/`} className="space-y-1 min-w-30 max-w-40">
                       <p className="font-semibold text-slate-900">{task.title}</p>
                       <p className="text-sm text-slate-500">
                         {task.description || "No description"}

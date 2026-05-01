@@ -7,11 +7,17 @@ import Link from "next/link";
 
 const NotificationListItem = ({
   notification,
+  onMarkAsRead,
+  onClose,
 }: {
   notification: TNotificationItem;
+  onMarkAsRead: () => void;
+  onClose: () => void;
 }) => {
   const handleMark = async () => {
     await markAsReadNotif(notification.id);
+    onMarkAsRead();
+    onClose();
   };
 
   const content = (
@@ -34,7 +40,6 @@ const NotificationListItem = ({
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          
           {/* Title */}
           <p className="text-sm font-semibold text-slate-900 truncate">
             {notification.title}
@@ -61,11 +66,7 @@ const NotificationListItem = ({
 
   if (notification.link) {
     return (
-      <Link
-        href={notification.link}
-        onClick={handleMark}
-        className="block"
-      >
+      <Link href={notification.link} onClick={handleMark} className="block">
         {content}
       </Link>
     );

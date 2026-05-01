@@ -41,8 +41,8 @@ const SearchToolbar = ({ pageName }: { pageName: string }) => {
   }, [searchValue, pathname, router, searchParams]);
 
   return (
-    <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-      <div className="relative w-full max-w-md">
+    <div className="flex  gap-2 lg:items-center lg:justify-between">
+      <div className="relative w-2/3 md:w-full max-w-md">
         <Search
           size={18}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"

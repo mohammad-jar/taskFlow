@@ -16,6 +16,7 @@ const NotificationsBell = ({ userId }: { userId: string }) => {
   const [notifications, setNotifications] = useState<TNotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [open , setOpen] = useState(false);
 
   const fetchUnreadNotif = useCallback(async () => {
     try {
@@ -65,10 +66,10 @@ const NotificationsBell = ({ userId }: { userId: string }) => {
   }, [userId]);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger  asChild>
         <button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white transition hover:bg-slate-100 md:h-10 md:w-10">
-          <Bell size={20} className="text-slate-600 md:size-[22px]" />
+          <Bell size={20} className="text-slate-600 md:size-5.5" />
 
           {unreadCount > 0 && (
             <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-semibold leading-none text-white">
@@ -83,7 +84,7 @@ const NotificationsBell = ({ userId }: { userId: string }) => {
         sideOffset={10}
         className="
           w-[calc(100vw-24px)]
-          max-w-[380px]
+          max-w-95
           rounded-2xl
           border border-slate-200
           bg-white
@@ -114,6 +115,8 @@ const NotificationsBell = ({ userId }: { userId: string }) => {
               <NotificationListItem
                 key={notification.id}
                 notification={notification}
+                onMarkAsRead={fetchUnreadNotif}
+                onClose={() => setOpen(false)}
               />
             ))
           ) : (

@@ -1,16 +1,49 @@
 "use client";
 import { acceptrejectInvitationAction } from "@/actions/workspace/invites/workspace-invite-actions";
 import { InviteStatus } from "@/generated/prisma/enums";
+import { getSocket } from "@/lib/socket-client";
 import { timeAgo } from "@/lib/utils";
 import { Check, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 type props = {
   invites: TInvite[];
+  userId: string;
 };
-const InviteCard = ({ invites }: props) => {
+
+const InviteCard = ({ invites, userId }: props) => {
+  const router = useRouter();
+
+  // Listen for real-time notifications about new invites
+  useEffect(() => {
+    const socket = getSocket();
+
+    socket.connect();
+    socket.emit("join-notifications", userId);
+
+    const handleNewNotification = (
+      notification: TNotificationItem & { type?: string },
+    ) => {
+      if (
+        notification.type === "WORKSPACE_INVITE_RECEIVED" ||
+        notification.link === "/workspaces/invitations"
+      ) {
+        router.refresh();
+      }
+    };
+
+    socket.on("notification:new", handleNewNotification);
+
+    return () => {
+      socket.off("notification:new", handleNewNotification);
+    };
+  }, [router, userId]);
+
   const handleBtn = async (status: InviteStatus, inviteId: string) => {
     await acceptrejectInvitationAction(inviteId, status);
+    router.refresh();
   };
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
