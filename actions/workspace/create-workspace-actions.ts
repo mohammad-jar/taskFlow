@@ -3,7 +3,6 @@ import { authOptions } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createWorkspaceSchema } from "@/schema/workspace";
 import { getServerSession } from "next-auth";
-import { revalidatePath } from "next/cache";
 
 export async function createWorkspaceAction(
   prevData: TCreateState,
@@ -23,7 +22,7 @@ export async function createWorkspaceAction(
     name: formData.get("name"),
     description: formData.get("description"),
   };
-  
+
   const parsedData = createWorkspaceSchema.safeParse(data);
   if (!parsedData.success) {
     const fieldErrors = parsedData.error.flatten().fieldErrors;
@@ -36,12 +35,11 @@ export async function createWorkspaceAction(
       },
     };
   }
-  
 
   const { name, description } = parsedData.data;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const workspace = await tx.workspace.create({
         data: {
           name,
@@ -49,6 +47,7 @@ export async function createWorkspaceAction(
           ownerId: session.user.id,
         },
       });
+
       await tx.workspaceMember.create({
         data: {
           workspaceId: workspace.id,
@@ -56,16 +55,19 @@ export async function createWorkspaceAction(
           role: "OWNER",
         },
       });
+
+      return {
+        workspace_id: workspace.id,
+        success: true,
+        message: "Workspace created successfully",
+      };
     });
-    // revalidatePath("/workspaces");
-    return {
-      success: true,
-      message: "Workspace created successfully",
-    };
+
+    return result;
   } catch (error) {
     return {
       success: false,
-      message:"Something went wrong while creating workspace",
+      message: "Something went wrong while creating workspace",
     };
   }
 }

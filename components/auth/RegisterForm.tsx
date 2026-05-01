@@ -1,17 +1,21 @@
 "use client";
-import { registerUser } from "@/actions/auth/register-user";
+import { registerUser, type RegisterState } from "@/actions/auth/register-user";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useActionState } from "react";
-import {  useState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
 
-const initialState = {
+const initialState: RegisterState = {
   error: "",
   success: "",
+  values: {
+    name: "",
+    email: "",
+  },
 };
 
 const inputClassName =
   "w-full rounded-2xl border border-black/20 bg-white/70 px-4 py-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-amber-200/60";
-
 function EyeIcon({ open }: { open: boolean }) {
   if (open) {
     return (
@@ -49,18 +53,21 @@ function EyeIcon({ open }: { open: boolean }) {
     </svg>
   );
 }
-
 function PasswordField({
   id,
   label,
   placeholder,
+  value,
   open,
+  onChange,
   onToggle,
 }: {
   id: string;
   label: string;
   placeholder: string;
+  value: string;
   open: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onToggle: () => void;
 }) {
   return (
@@ -72,6 +79,8 @@ function PasswordField({
         <input
           id={id}
           name={id}
+          value={value}
+          onChange={onChange}
           type={open ? "text" : "password"}
           placeholder={placeholder}
           className={`${inputClassName} pr-12`}
@@ -92,10 +101,36 @@ function PasswordField({
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [authError, setAuthError] = useState("");
   const [state, formAction, isPending] = useActionState(
     registerUser,
     initialState,
   );
+  const router = useRouter();
+
+  // login after register successfully
+  useEffect(() => {
+    if (state.success && state.values.email && password) {
+      setAuthError("");
+
+      signIn("credentials", {
+        email: state.values.email,
+        password,
+        redirect: false,
+        callbackUrl: "/dashboard",
+      }).then((result) => {
+        if (!result?.ok) {
+          setAuthError("Account created, but automatic login failed.");
+          return;
+        }
+
+        router.push("/dashboard");
+        router.refresh();
+      });
+    }
+  }, [state.success, state.values.email, password, router]);
 
   return (
     <div className="space-y-6">
@@ -133,6 +168,7 @@ export default function RegisterForm() {
             name="name"
             type="text"
             placeholder="Enter your full name"
+            defaultValue={state.values.name}
             className={inputClassName}
           />
         </label>
@@ -145,6 +181,7 @@ export default function RegisterForm() {
             name="email"
             type="email"
             placeholder="you@example.com"
+            defaultValue={state.values.email}
             className={inputClassName}
           />
         </label>
@@ -153,7 +190,9 @@ export default function RegisterForm() {
           id="password"
           label="Password"
           placeholder="Create a secure password"
+          value={password}
           open={showPassword}
+          onChange={(event) => setPassword(event.target.value)}
           onToggle={() => setShowPassword((current) => !current)}
         />
 
@@ -161,15 +200,15 @@ export default function RegisterForm() {
           id="confirmPassword"
           label="Confirm password"
           placeholder="Re-enter your password"
+          value={confirmPassword}
           open={showConfirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
           onToggle={() => setShowConfirmPassword((current) => !current)}
         />
 
         {state?.error && <p className="text-sm text-red-600">{state.error}</p>}
 
-        {state?.success && (
-          <p className="text-sm text-green-600">{state.success}</p>
-        )}
+        {authError && <p className="text-sm text-red-600">{authError}</p>}
 
         <button
           type="submit"

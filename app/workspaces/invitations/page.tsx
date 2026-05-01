@@ -1,26 +1,24 @@
 import PageHeader from "@/components/page-header";
-import TasksToolbar from "@/components/search-toolbar";
 import ToolBarStatus from "@/components/ToolBarStatus";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth";
 import { redirect } from "next/navigation";
 import { getInviteStatus, getUserInvites } from "@/actions/workspace/invites/invite-actions";
 import InviteCard from "@/components/workspace/invitations/invite-card";
+import { getCurrentUser } from "@/lib/get-current-user";
 const InvitationsPage = async ({searchParams}: TSearchPageProps) => {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user.email) {
-    redirect("/login");
+  const user = await getCurrentUser();
+  if (!user || !user.email) {
+    redirect("/api/auth/signin");
   }
   const params= await searchParams;
   const page_status = params?.status;
-  const email = session.user.email;
+  const email = user.email;
   const [invites, status] = await Promise.all([
     getUserInvites(email, page_status),
     getInviteStatus(email),
   ]);  
   
   return (
-    <section className="p-5 bg-slate-100 min-h-screen ">
+    <section className="min-h-full bg-slate-100 p-5">
       <PageHeader
         title1="Invitations"
         title2="Invitations"
@@ -32,9 +30,8 @@ const InvitationsPage = async ({searchParams}: TSearchPageProps) => {
 
       </div>
       
-        <InviteCard invites={invites.invites ?? []} />
+        <InviteCard invites={invites.invites ?? []} userId={user.id} />
     </section>
   );
 };
-
 export default InvitationsPage;

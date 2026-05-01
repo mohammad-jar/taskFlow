@@ -3,7 +3,8 @@ import Link from "next/link";
 import { signIn, getProviders } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import SpinnerElement from '@/components/SpinnerElement'
+import SpinnerElement from "@/components/SpinnerElement";
+import GoogleIcon from "../GoogleIcon";
 
 const inputClassName =
   "w-full rounded-2xl border border-black/20 bg-white/70 px-4 py-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-amber-200/60";
@@ -95,7 +96,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   // if come from protect page so will go to page that come from it
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({
@@ -160,13 +161,18 @@ export default function LoginForm() {
           type="button"
           onClick={hendleGoogleLogin}
           disabled={providerState.isPending}
-          className="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950"
+          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950"
         >
-          <span className="text-base">G</span>
-          {providerState.isPending ? "..." : " Continue with Google"}
+          <GoogleIcon />{" "}
+          {providerState.isPending ? (
+            <SpinnerElement />
+          ) : (
+            " Continue with Google"
+          )}
         </button>
         <button
           type="button"
+          disabled={true}
           className="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950"
         >
           <span className="text-base">A</span>
@@ -202,7 +208,7 @@ export default function LoginForm() {
         <PasswordField
           id="password"
           label="Password"
-          placeholder="Create a secure password"
+          placeholder="enter password"
           value={data.password}
           open={showPassword}
           onChange={handleChange}
@@ -216,14 +222,7 @@ export default function LoginForm() {
           disabled={state.isPending}
           className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-700"
         >
-          {state.isPending ? (
-            
-              <SpinnerElement />
-              
-            
-          ) : (
-            "Create your account"
-          )}
+          {state.isPending ? <SpinnerElement /> : "Login to your account"}
         </button>
       </form>
 

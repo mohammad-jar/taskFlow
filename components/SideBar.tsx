@@ -149,7 +149,7 @@ const SideBar = () => {
       {/* Mobile top button */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-40 flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden"
+        className="fixed left-4 top-4 z-40 flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm lg:hidden"
       >
         <Menu size={22} />
       </button>
@@ -161,7 +161,7 @@ const SideBar = () => {
 
       {/* Mobile Drawer */}
       {open && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-50 lg:hidden">
           {/* Overlay */}
           <div
             onClick={() => setOpen(false)}

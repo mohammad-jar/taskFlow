@@ -110,10 +110,10 @@ const ToolBarStatus = ({
           <button
             key={item.key}
             onClick={() => handleClick(item.statusValue)}
-            className={`flex cursor-pointer items-center justify-between gap-2 rounded-md bg-white p-2 shadow-sm transition
+            className={`flex cursor-pointer  items-center justify-between gap-2 rounded-md bg-white p-2 shadow-sm transition
               ${isActive ? `ring-2 ${item.ringColor}` : "hover:bg-slate-50"}`}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <span className={`h-2.5 w-2.5 rounded-full ${item.dotColor}`} />
               <span className="text-sm font-medium text-slate-600">
                 {item.label}

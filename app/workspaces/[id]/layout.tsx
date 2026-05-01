@@ -20,7 +20,7 @@ const WorkspaceLayout = async ({
   const { workspace, currentUserRole } = data;
 
   return (
-    <section className="p-5 bg-white min-h-screen">
+    <section className="min-h-full bg-white p-5">
       <div className="flex items-center justify-between mb-5">
         <WorkspaceDefine
           workspace_name={workspace.name}

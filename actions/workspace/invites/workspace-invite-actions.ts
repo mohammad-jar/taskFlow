@@ -132,6 +132,7 @@ export async function createInviteAction(
 
   revalidatePath(`/workspaces/${workspaceId}`);
   return {
+    workspace_id: workspaceId,
     success: true,
     message: "Workspace created successfully",
   };

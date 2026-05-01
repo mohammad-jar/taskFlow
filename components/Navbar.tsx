@@ -1,5 +1,5 @@
 "use client";
-import { Bell, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,15 +15,13 @@ export default function Navbar() {
       {/* 🔍 Search */}
       <div className="flex items-center gap-2 w-full max-w-xs md:max-w-sm">
         
-        {/* Mobile search icon */}
-        <button className="md:hidden flex items-center justify-center h-10 w-10 rounded-xl bg-slate-100">
-          <Search size={18} className="text-gray-600" />
-        </button>
+        
 
         {/* Desktop input */}
-        <div className="relative hidden md:block w-full">
+        <div className="relative hidden lg:block w-full">
           <Search
             size={16}
+            display="none"
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
           />
           <input

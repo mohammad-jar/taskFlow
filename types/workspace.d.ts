@@ -3,6 +3,7 @@ type TCreateState = {
   success: boolean;
   message: string;
   errors?: Record<string, string | undefined>;
+  workspace_id?: string;
 };
 
 type PageProps = {

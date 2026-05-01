@@ -2,7 +2,6 @@ import {
   getTasksStats,
   getWorkspaceTasks,
 } from "@/actions/tasks/tasks_and_stats";
-import PageHeader from "@/components/page-header";
 import ToolBarStatus from "@/components/ToolBarStatus";
 import TasksTable from "@/components/tasks/tasks-table";
 import SearchToolbar from "@/components/search-toolbar";
@@ -32,7 +31,7 @@ const WorkspaceTasksPage = async ({ params, searchParams }: PageProps) => {
   return (
     <section className="">
       
-      <div className="flex justify-between items-center gap-4 mb-4">
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
         <ToolBarStatus status={stats} pageName="tasks" />
 
         <SearchToolbar pageName="tasks" />

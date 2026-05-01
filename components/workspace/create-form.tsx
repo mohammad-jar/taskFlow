@@ -4,11 +4,13 @@ import { useActionState, useEffect, useRef } from "react";
 import { createWorkspaceAction } from "@/actions/workspace/create-workspace-actions";
 import { createInviteAction } from "@/actions/workspace/invites/workspace-invite-actions";
 import SpinnerElement from "../SpinnerElement";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { getElementClassName } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const initialState: TCreateState = {
   success: false,
+  workspace_id: "",
   message: "",
   errors: {},
 };
@@ -35,6 +37,7 @@ export default function CreateForm({
   workspace_name,
 }: CreateFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
   const selectedAction =
     api === "workspace"
       ? createWorkspaceAction
@@ -53,7 +56,23 @@ export default function CreateForm({
 
   useEffect(() => {
     if (state.success && state.message) {
-      toast.success(state.message);
+      if (api === "workspace") {
+        toast.success("Workspace created", {
+          description: state.message,
+          action: {
+            label: "Go to workspace",
+            onClick: () => router.push(`/workspaces/${state.workspace_id}`),
+          },
+        });
+      }else{
+        toast.success("Invitation sent", {
+          description: state.message,
+          action: {
+            label: "Go to workspace members",
+            onClick: () => router.push(`/workspaces/${state.workspace_id}/members`),
+          },
+        });
+      }
       formRef.current?.reset();
     }
 
