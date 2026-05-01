@@ -13,7 +13,10 @@ export async function createInviteAction(
   workspaceId: string,
   workspace_name: string,
 ): Promise<TCreateState> {
-  const user = await getCurrentUser();
+   const user = await getCurrentUser();
+    if (!user) {
+      return { success: false, message: "Unauthorized" };
+    }
   // 1- member in this workspace and just adimn or owner can invite another one
   // 2- invited one have account
   // 3- check invited one dosent exisit
@@ -144,6 +147,9 @@ export async function acceptrejectInvitationAction(
 ) {
   try {
     const user = await getCurrentUser();
+    if (!user) {
+      return { success: false, message: "Unauthorized" };
+    }
     let receiverUserId: string | null = null;
     let realtimeNotification: unknown = null;
 

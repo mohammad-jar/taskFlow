@@ -64,7 +64,7 @@ export async function createWorkspaceAction(
     });
 
     return result;
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "Something went wrong while creating workspace",

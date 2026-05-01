@@ -9,6 +9,9 @@ import { revalidatePath } from "next/cache";
 export async function updateTaskStatus(taskId: string, status: TaskStatus) {
   try {
     const user = await getCurrentUser();
+    if (!user) {
+      return { success: false, message: "Unauthorized" };
+    }
     const updated_task = await prisma.task.update({
       where: { id: taskId },
       data: { status },
@@ -45,7 +48,7 @@ export async function updateTaskStatus(taskId: string, status: TaskStatus) {
 
     revalidatePath(`/workspaces/${updated_task.workspaceId}/board`);
     return { success: true, message: "Status Updated Successfully" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Status could't Updated Successfully" };
   }
 }

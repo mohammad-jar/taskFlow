@@ -23,7 +23,7 @@ export async function getWorkspacesAction(userId: string) {
     });
 
     return { success: true, message: "Got workspaces successfully", data };
-  } catch (error) {
+  } catch {
     return { success: false, message: "error while getting workspaces" };
   }
 }
@@ -68,7 +68,7 @@ export async function getWorkspaceDetailsAction(
     
     
     return {workspace}
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "error while getting workspace details...",

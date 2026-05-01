@@ -1,7 +1,4 @@
-const WorkspaceDetailsPage = async ({ params }: PageProps) => {
-  const { id } = await params;
-  
-
+const WorkspaceDetailsPage = async () => {
   return (
     <section >
       overview page 

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Plus, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { formatName } from "@/lib/utils";
 
 type WorkspaceItem = {
@@ -8,14 +8,6 @@ type WorkspaceItem = {
   name: string;
   description: string | null;
   membersCount: number;
-};
-
-const iconStyles: Record<string, string> = {
-  DT: "bg-violet-100 text-violet-700",
-  M: "bg-orange-100 text-orange-700",
-  P: "bg-green-100 text-green-700",
-  S: "bg-amber-100 text-amber-700",
-  D: "bg-pink-100 text-pink-700",
 };
 
 export default function WorkspacesGrid({

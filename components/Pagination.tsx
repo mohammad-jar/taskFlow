@@ -1,6 +1,5 @@
 "use client";
 import {
-  Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink,

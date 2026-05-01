@@ -79,7 +79,7 @@ export default function CreateForm({
     if (!state.success && state.message) {
       toast.error(state.message);
     }
-  }, [state]);
+  }, [api, router, state]);
 
   if (!workspace_id && !workspace_name && api === "invite") {
     return null;

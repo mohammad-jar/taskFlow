@@ -28,7 +28,7 @@ export async function getUserNotifications() {
       },
       
     });
-  } catch (error) {
+  } catch {
     return { success: false, message: "error while fetching notifications..." };
   }
 }
@@ -43,7 +43,7 @@ export async function getUnreadNotificationsCount() {
         isRead: false,
       },
     });
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "error while fetching unread notifications...",

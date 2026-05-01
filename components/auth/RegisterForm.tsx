@@ -113,8 +113,6 @@ export default function RegisterForm() {
   // login after register successfully
   useEffect(() => {
     if (state.success && state.values.email && password) {
-      setAuthError("");
-
       signIn("credentials", {
         email: state.values.email,
         password,

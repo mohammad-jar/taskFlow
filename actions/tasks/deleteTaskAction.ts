@@ -22,7 +22,7 @@ export async function deleteTaskAction(taskId: string) {
     revalidatePath('/tasks')
 
     return { success: true, message: "Task Deleted Successfully." };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Task colud't Delete." };
   }
 }

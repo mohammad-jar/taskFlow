@@ -1,15 +1,16 @@
 "use client";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Cell,
-} from "recharts";
-interface props {
+
+import dynamic from "next/dynamic";
+
+const TasksStatusChartClient = dynamic(
+  () => import("./TasksStatusChartClient"),
+  {
+    ssr: false,
+    loading: () => <div className="h-full w-full" />,
+  },
+);
+
+interface Props {
   tasksCount: {
     totalTasks?: number;
     pendingTasks?: number;
@@ -17,12 +18,8 @@ interface props {
     completedTasks?: number;
   };
 }
-const TasksStatusChart = ({ tasksCount }: props) => {
-  const data = [
-  { status: "Completed", count: tasksCount.completedTasks},
-  { status: "In Progress", count: tasksCount.inProgressTasks },
-  { status: "Pending", count: tasksCount.pendingTasks },
-];
+
+const TasksStatusChart = ({ tasksCount }: Props) => {
   return (
     <div className="w-full mt-5 md:w-1/2 bg-white rounded-2xl p-6 shadow-md border border-gray-100">
       <div className="mb-5">
@@ -35,53 +32,7 @@ const TasksStatusChart = ({ tasksCount }: props) => {
       </div>
 
       <div className="h-60 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
-            <CartesianGrid
-              vertical={false}
-              stroke="#e5e7eb"
-              strokeDasharray="4 4"
-            />
-
-            <XAxis
-              dataKey="status"
-              tick={{ fontSize: 12, fill: "#64748b" }}
-              axisLine={false}
-              tickLine={false}
-            />
-
-            <YAxis
-              allowDecimals={false}
-              tick={{ fontSize: 12, fill: "#64748b" }}
-              axisLine={false}
-              tickLine={false}
-            />
-
-            <Tooltip
-              cursor={{ fill: "rgba(148, 163, 184, 0.08)" }}
-              contentStyle={{
-                borderRadius: "12px",
-                border: "1px solid #e5e7eb",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-              }}
-            />
-
-            <Bar dataKey="count" radius={[10, 10, 0, 0]} barSize={60}>
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={
-                    entry.status === "Completed"
-                      ? "#22c55e"
-                      : entry.status === "In Progress"
-                        ? "#f59e0b"
-                        : "#ef4444"
-                  }
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <TasksStatusChartClient tasksCount={tasksCount} />
       </div>
     </div>
   );

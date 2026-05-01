@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 type props = {
   title: string;
@@ -10,9 +11,10 @@ type props = {
 const ItemsNotFound = ({ title, desc, link_name, next_page}: props) => {
   return (
     <div className="flex flex-col space-y-2 mx-auto items-center justify-center mt-15 mr-12">
-      <img
+      <Image
         src="/notfound.png"
         width={120}
+        height={120}
         alt="notfound items"
         className="rounded-lg"
       />

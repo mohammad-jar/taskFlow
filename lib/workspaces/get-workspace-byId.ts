@@ -41,7 +41,7 @@ export async function getWorkspaceById(id: string) {
       message: "Workspace fetched successfully",
       workspace,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "error while getting workspace by id...",

@@ -20,7 +20,7 @@ export default async function getTasksCount() {
     ]);
 
     return {totalTasks, pendingTasks, inProgressTasks, completedTasks}
-  } catch (error) {
+  } catch {
     return { success: false, message: "error while getting tasks count" };
   }
 }
