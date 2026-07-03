@@ -26,7 +26,7 @@ export async function loginUser(
     where: { email },
   });
   if (!user) {
-    return { error: "email not exisit..." };
+    return { error: "Email does not exist." };
   }
   if (!user.password) {
     return { error: "This account does not have a password login." };

@@ -66,7 +66,7 @@ export async function getWorkspaceTasks(
 }
 
 export async function getTasksStats(workspaceId: string) {
-  const [all, pending, inProgress, completed] = await Promise.all([
+  const [all, pending, inProgress, review, completed] = await Promise.all([
     prisma.task.count({
       where: { workspaceId },
     }),
@@ -77,6 +77,9 @@ export async function getTasksStats(workspaceId: string) {
       where: { workspaceId, status: "IN_PROGRESS" },
     }),
     prisma.task.count({
+      where: { workspaceId, status: "REVIEW" },
+    }),
+    prisma.task.count({
       where: { workspaceId, status: "COMPLETED" },
     }),
   ]);
@@ -85,6 +88,7 @@ export async function getTasksStats(workspaceId: string) {
     all,
     pending,
     inProgress,
+    review,
     completed,
   };
 }

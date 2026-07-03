@@ -10,19 +10,27 @@ type Props = {
 };
 const PageHeader = ({ title1, title2, desc, right_link, href }: Props) => {
   return (
-    <div className="flex items-center justify-between mb-5">
+    <div className="mb-6 flex flex-col gap-4 rounded-3xl border border-white/70 bg-white/80 p-5 shadow-sm shadow-blue-100/60 backdrop-blur md:flex-row md:items-center md:justify-between">
       <div>
-        {title1 && <p className="hidden sm:block mb-1 text-md font-medium uppercase tracking-wide text-blue-700">
-          {title1}
-        </p>}
-        <h1 className="text-2xl text-blue-600 sm:4xl tracking-tight sm:text-slate-900">{title2}</h1>
-        {desc && <p className="hidden sm:block my-1 text-lg text-slate-500">{desc}</p>}
+        {title1 && (
+          <p className="mb-2 hidden text-xs font-semibold uppercase tracking-[0.22em] text-blue-600 sm:block">
+            {title1}
+          </p>
+        )}
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+          {title2}
+        </h1>
+        {desc && (
+          <p className="mt-2 hidden max-w-2xl text-sm leading-6 text-slate-500 sm:block">
+            {desc}
+          </p>
+        )}
       </div>
 
       {href && (
         <Link
           href={href}
-          className="inline-flex cursor-pointer h-8 sm:h-10 items-center justify-center sm:gap-2 rounded-md bg-blue-600 px-2 sm:px-4 text-md font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Plus size={20} />
           {right_link}

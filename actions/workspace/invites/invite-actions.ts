@@ -76,6 +76,6 @@ export async function getUserInvites(email: string, status?: string) {
 
     return { invites };
   } catch {
-    return { success: false, message: "error while geting user invites..." };
+    return { success: false, message: "Error while getting user invites." };
   }
 }

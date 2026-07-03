@@ -22,3 +22,8 @@ export const createTaskSchema = z.object({
   workspaceId: z.string().trim().min(1, "Due date is required."),
   dueDate: z.string().trim().min(1, "Due date is required."),
 });
+
+export const editTaskSchema = createTaskSchema.omit({
+  assigneeId: true,
+  workspaceId: true,
+});

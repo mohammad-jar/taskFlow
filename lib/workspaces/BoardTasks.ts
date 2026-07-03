@@ -23,6 +23,7 @@ export async function getWorkspaceBoardTasks(workspaceId: string) {
   const groupedTasks = {
     TODO: tasks.filter((task) => task.status === "PENDING"),
     IN_PROGRESS: tasks.filter((task) => task.status === "IN_PROGRESS"),
+    REVIEW: tasks.filter((task) => task.status === "REVIEW"),
     DONE: tasks.filter((task) => task.status === "COMPLETED"),
   };
 

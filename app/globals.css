@@ -123,6 +123,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    background:
+      radial-gradient(circle at top left, rgb(219 234 254 / 0.85), transparent 34rem),
+      linear-gradient(135deg, #f8fafc 0%, #eef6ff 48%, #f8fafc 100%);
   }
   html {
     @apply font-sans;

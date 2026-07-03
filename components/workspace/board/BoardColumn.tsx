@@ -1,11 +1,17 @@
 "use client";
-import { updateTaskStatus } from "@/actions/tasks/updateTaskAcrtion";
+import { updateTaskStatus } from "@/actions/tasks/updateTaskAction";
 import { TaskStatus } from "@/generated/prisma/enums";
+import { CalendarDays } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 type BoardColumnProps = {
   title: string;
   tasks: TBoardTask[];
+  workspaceId: string;
+  actionLabel?: string;
+  actionClassName?: string;
+  nextStatus?: TaskStatus;
 };
 
 const priorityStyle = {
@@ -14,72 +20,93 @@ const priorityStyle = {
   HIGH: "bg-red-50 text-red-600",
 };
 
-const BoardColumn =  ({ title, tasks }: BoardColumnProps) => {
-  // console.log('image is : ', tasks[0].assignee?.image);
-  
-  const updateStatus = async(taskId : string, newStatus: TaskStatus) => {
-     await updateTaskStatus(taskId, newStatus);
+const columnStyle: Record<string, string> = {
+  Todo: "from-rose-50 to-white",
+  "In Progress": "from-amber-50 to-white",
+  Review: "from-blue-50 to-white",
+  Done: "from-emerald-50 to-white",
+};
 
+const BoardColumn = ({
+  title,
+  tasks,
+  workspaceId,
+  actionLabel,
+  actionClassName,
+  nextStatus,
+}: BoardColumnProps) => {
+  const updateStatus = async (taskId: string, newStatus: TaskStatus) => {
+    await updateTaskStatus(taskId, newStatus);
   };
 
   return (
-    <div className="flex min-h-125 flex-col rounded-2xl border border-slate-200 bg-slate-50">
-      {/* Column Header */}
-      <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+    <div
+      className={`flex min-h-125 flex-col rounded-3xl border border-white/80 bg-gradient-to-b ${
+        columnStyle[title] ?? "from-slate-50 to-white"
+      } shadow-sm`}
+    >
+      <div className="flex items-center justify-between border-b border-white/80 px-4 py-3">
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+          <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
         </div>
 
-        <span className="rounded-full bg-white px-2 py-0.5 text-sm font-medium text-slate-500">
+        <span className="rounded-full bg-white px-2.5 py-1 text-sm font-semibold text-slate-600 shadow-sm">
           {tasks.length}
         </span>
       </div>
 
-      {/* Tasks */}
       <div className="flex flex-1 flex-col gap-3 p-3">
         {tasks.length === 0 ? (
-          <div className="flex h-32 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-sm text-slate-400">
-            No tasks
+          <div className="flex h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white/80 px-5 text-center text-sm text-slate-400">
+            <span className="text-2xl">+</span>
+            <span className="mt-1">No tasks in {title.toLowerCase()}</span>
           </div>
         ) : (
           tasks.map((task) => (
             <div
               key={task.id}
-              className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md"
+              className="rounded-2xl border border-white bg-white/95 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-100/60"
             >
-              <div className="mb-3 flex items-center justify-between">
-                <h4 className="line-clamp-2 text-sm font-semibold text-slate-800">
-                  {task.title}
-                </h4>
-
-                {title === 'Todo' ?  <button
-                  onClick={()=> updateStatus(task.id, 'IN_PROGRESS')}
-                  className="bg-blue-50 text-sm text-blue-400 px-2 py-1 cursor-pointer rounded-md"
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <Link
+                  href={`/workspaces/${workspaceId}/tasks/${task.id}`}
+                  className="min-w-0"
                 >
-                  Start 
-                </button> : ''}
-                {title === 'In Progress' ?  <button
-                  onClick={()=> updateStatus(task.id, 'COMPLETED')}
-                  className="bg-red-50 text-sm text-red-400 px-2 py-1 cursor-pointer rounded-md"
-                >
-                  Finish
-                </button> : ''}
-              </div>
+                  <h4 className="line-clamp-2 text-sm font-semibold leading-5 text-slate-900 transition hover:text-blue-600">
+                    {task.title}
+                  </h4>
+                </Link>
 
-              {task.description && (
-                <div className="flex items-center justify-between mb-2">
-                  <p className=" line-clamp-2 text-xs leading-5 text-slate-500">
-                    {task.description}
-                  </p>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                      priorityStyle[task.priority]
+                {actionLabel && nextStatus && (
+                  <button
+                    onClick={() => updateStatus(task.id, nextStatus)}
+                    className={`cursor-pointer rounded-md px-2 py-1 text-sm transition ${
+                      actionClassName ?? "bg-slate-100 text-slate-600"
                     }`}
                   >
-                    {task.priority}
-                  </span>
-                </div>
-              )}
+                    {actionLabel}
+                  </button>
+                )}
+              </div>
+
+              <div className="mb-3 flex items-start justify-between gap-3">
+                {task.description ? (
+                  <p className="line-clamp-2 text-xs leading-5 text-slate-500">
+                    {task.description}
+                  </p>
+                ) : (
+                  <p className="text-xs leading-5 text-slate-400">
+                    No description
+                  </p>
+                )}
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                    priorityStyle[task.priority]
+                  }`}
+                >
+                  {task.priority}
+                </span>
+              </div>
 
               <div className="flex items-center justify-between border-t border-slate-100 pt-3">
                 <div className="flex items-center gap-2">
@@ -102,7 +129,8 @@ const BoardColumn =  ({ title, tasks }: BoardColumnProps) => {
                   </span>
                 </div>
 
-                <span className="text-xs text-slate-400">
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <CalendarDays size={13} />
                   {task.dueDate
                     ? new Date(task.dueDate).toLocaleDateString()
                     : "No date"}

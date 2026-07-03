@@ -12,13 +12,17 @@ const CreateWorkspaceTaskPage = async ({ params }: PageProps) => {
   const members = workspace?.members ?? [];
 
   return (
-    <section >
-      <div className="flex items-center justify-between">
-        <PageHeader
-          title2={`Create Task in ${name}`}
-        />
-      </div>
-      <CreateTaskForm workspaceId={id} members={members ?? []} user_id={user.id} />
+    <section className="space-y-4">
+      <PageHeader
+        title1="new task"
+        title2={`Create Task in ${name}`}
+        desc="Add a clear title, owner, priority, and due date so the task can move through the board."
+      />
+      <CreateTaskForm
+        workspaceId={id}
+        members={members ?? []}
+        user_id={user.id}
+      />
     </section>
   );
 };

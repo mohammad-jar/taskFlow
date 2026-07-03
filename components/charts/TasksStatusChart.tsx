@@ -15,23 +15,24 @@ interface Props {
     totalTasks?: number;
     pendingTasks?: number;
     inProgressTasks?: number;
+    reviewTasks?: number;
     completedTasks?: number;
   };
 }
 
 const TasksStatusChart = ({ tasksCount }: Props) => {
   return (
-    <div className="w-full mt-5 md:w-1/2 bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+    <div className="mt-5 w-full rounded-3xl border border-white/80 bg-white/90 p-6 shadow-sm shadow-blue-100/60">
       <div className="mb-5">
-        <h2 className="text-xl font-semibold text-slate-800">
+        <h2 className="text-xl font-semibold tracking-tight text-slate-950">
           Tasks by Status
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-500">
           Overview of task distribution by current status
         </p>
       </div>
 
-      <div className="h-60 w-full">
+      <div className="h-72 w-full">
         <TasksStatusChartClient tasksCount={tasksCount} />
       </div>
     </div>

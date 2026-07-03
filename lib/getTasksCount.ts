@@ -4,7 +4,13 @@ import { prisma } from "./prisma";
 export default async function getTasksCount() {
   try {
     const user = await getCurrentUser();
-    const [totalTasks, pendingTasks, inProgressTasks, completedTasks] = await Promise.all([
+    const [
+      totalTasks,
+      pendingTasks,
+      inProgressTasks,
+      reviewTasks,
+      completedTasks,
+    ] = await Promise.all([
        prisma.task.count({
         where: { assigneeId: user.id },
       }),
@@ -15,11 +21,20 @@ export default async function getTasksCount() {
         where: { assigneeId: user.id, status: 'IN_PROGRESS'},
       }),
        prisma.task.count({
+        where: { assigneeId: user.id, status: 'REVIEW'},
+      }),
+       prisma.task.count({
         where: { assigneeId: user.id, status: 'COMPLETED'},
       }),
     ]);
 
-    return {totalTasks, pendingTasks, inProgressTasks, completedTasks}
+    return {
+      totalTasks,
+      pendingTasks,
+      inProgressTasks,
+      reviewTasks,
+      completedTasks,
+    }
   } catch {
     return { success: false, message: "error while getting tasks count" };
   }

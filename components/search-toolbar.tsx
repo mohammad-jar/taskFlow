@@ -41,8 +41,8 @@ const SearchToolbar = ({ pageName }: { pageName: string }) => {
   }, [searchValue, pathname, router, searchParams]);
 
   return (
-    <div className="flex  gap-2 lg:items-center lg:justify-between">
-      <div className="relative w-2/3 md:w-full max-w-md">
+    <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between xl:w-auto">
+      <div className="relative w-full sm:min-w-72 xl:min-w-80">
         <Search
           size={18}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -52,7 +52,7 @@ const SearchToolbar = ({ pageName }: { pageName: string }) => {
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           placeholder="Search tasks..."
-          className="h-11 w-full rounded-md bg-slate-100 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500"
+          className="h-11 w-full rounded-2xl border border-white bg-white pl-10 pr-4 text-sm outline-none shadow-sm transition focus:border-blue-300 focus:ring-2 focus:ring-blue-100"
         />
       </div>
 

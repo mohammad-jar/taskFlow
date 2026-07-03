@@ -17,9 +17,9 @@ export async function createInviteAction(
     if (!user) {
       return { success: false, message: "Unauthorized" };
     }
-  // 1- member in this workspace and just adimn or owner can invite another one
+  // 1- member in this workspace and only admin or owner can invite another one
   // 2- invited one have account
-  // 3- check invited one dosent exisit
+  // 3- check invited one does not exist
   // 4- if invited is pending before
   // 5- create invite
   // 6- create notification
@@ -68,7 +68,7 @@ export async function createInviteAction(
   if (!haveAccount) {
     return {
       success: false,
-      message: "email dosent have an account in our website...",
+      message: "This email does not have an account in our app.",
       errors: {},
     };
   }
@@ -82,7 +82,7 @@ export async function createInviteAction(
   if (alreadyMember) {
     return {
       success: false,
-      message: "Already founded in this workspace",
+      message: "This user is already in this workspace.",
       errors: {},
     };
   }
@@ -137,7 +137,7 @@ export async function createInviteAction(
   return {
     workspace_id: workspaceId,
     success: true,
-    message: "Workspace created successfully",
+    message: "Invitation sent successfully",
   };
 }
 
@@ -147,11 +147,18 @@ export async function acceptrejectInvitationAction(
 ) {
   try {
     const user = await getCurrentUser();
-    if (!user) {
+    if (!user || !user.email) {
       return { success: false, message: "Unauthorized" };
     }
+
+    if (inviteStatus !== "ACCEPTED" && inviteStatus !== "REJECTED") {
+      return { success: false, message: "Invalid invitation status" };
+    }
+
     let receiverUserId: string | null = null;
     let realtimeNotification: unknown = null;
+    let workspaceId: string | null = null;
+    let expiredInvite = false;
 
     await prisma.$transaction(async (tx) => {
       const invite = await tx.workspaceInvite.findUnique({
@@ -164,6 +171,35 @@ export async function acceptrejectInvitationAction(
       if (!invite) {
         throw new Error("Invite not found");
       }
+
+      if (invite.email.toLowerCase() !== user.email!.toLowerCase()) {
+        throw new Error("You are not allowed to update this invitation");
+      }
+
+      if (invite.status !== "PENDING") {
+        throw new Error("This invitation is no longer pending");
+      }
+
+      if (invite.expiresAt && invite.expiresAt < new Date()) {
+        workspaceId = invite.workspaceId;
+        expiredInvite = true;
+
+        await tx.workspaceInvite.update({
+          where: { id: inviteId },
+          data: { status: "EXPIRED" },
+        });
+
+        await tx.notification.updateMany({
+          where: { inviteId, userId: user.id },
+          data: {
+            isRead: true,
+          },
+        });
+
+        return null;
+      }
+
+      workspaceId = invite.workspaceId;
 
       const updatedInvite = await tx.workspaceInvite.update({
         where: { id: inviteId },
@@ -200,14 +236,39 @@ export async function acceptrejectInvitationAction(
       }
 
       if (inviteStatus === "ACCEPTED") {
-        // add the user to workspace members
-        await tx.workspaceMember.create({
-          data: {
-            workspaceId: invite.workspaceId,
-            userId: user.id,
-            role: invite.role,
+        const existingMember = await tx.workspaceMember.findUnique({
+          where: {
+            workspaceId_userId: {
+              workspaceId: invite.workspaceId,
+              userId: user.id,
+            },
           },
         });
+
+        if (!existingMember) {
+          await tx.workspaceMember.create({
+            data: {
+              workspaceId: invite.workspaceId,
+              userId: user.id,
+              role: invite.role,
+            },
+          });
+        }
+
+        if (existingMember && existingMember.role !== invite.role) {
+          await tx.workspaceMember.update({
+            where: {
+              workspaceId_userId: {
+                workspaceId: invite.workspaceId,
+                userId: user.id,
+              },
+            },
+            data: {
+              role: invite.role,
+            },
+          });
+        }
+
         // update notification isRead to be true
         await tx.notification.updateMany({
           where: { inviteId, userId: user.id },
@@ -223,10 +284,9 @@ export async function acceptrejectInvitationAction(
             type: NotificationType.WORKSPACE_INVITE_ACCEPTED,
             title: "Invitation accepted",
             message: `${user.name} accepted your invitation to ${invite.workspace.name}`,
-            // link: `/workspaces/${invite.workspaceId}` || null,
-            link: "/workspaces/invitations",
+            link: `/workspaces/${invite.workspaceId}`,
             senderId: user.id || null,
-            workspaceId: invite.workspaceId || null,
+            workspaceId: invite.workspaceId,
             inviteId: inviteId || null,
           },
           tx,
@@ -234,17 +294,36 @@ export async function acceptrejectInvitationAction(
         receiverUserId = invite.invitedById;
         realtimeNotification = notification;
       }
-      if (receiverUserId && realtimeNotification) {
-        emitNotificationToUser(receiverUserId, realtimeNotification);
-      }
-
       return updatedInvite;
     });
+
+    if (receiverUserId && realtimeNotification) {
+      emitNotificationToUser(receiverUserId, realtimeNotification);
+    }
+
+    revalidatePath("/workspaces/invitations");
+    if (workspaceId) {
+      revalidatePath(`/workspaces/${workspaceId}`);
+      revalidatePath(`/workspaces/${workspaceId}/members`);
+    }
+
+    if (expiredInvite) {
+      return { success: false, message: "This invitation has expired" };
+    }
+
+    return {
+      success: true,
+      message:
+        inviteStatus === "ACCEPTED"
+          ? "Invitation accepted successfully"
+          : "Invitation rejected successfully",
+    };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       success: false,
-      message: "Failed to update invite",
+      message:
+        error instanceof Error ? error.message : "Failed to update invite",
     };
   }
 }

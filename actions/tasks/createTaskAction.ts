@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { emitNotificationToUser } from "@/lib/socket-server";
 import { formatTaskZodErrors } from "@/lib/utils";
 import { createTaskSchema } from "@/schema/taskSchema";
+import { revalidatePath } from "next/cache";
 
 export async function createTaskAction(
   prevState: CreateTaskState,
@@ -76,7 +77,7 @@ export async function createTaskAction(
     if (!canCreateTask) {
       return {
         success: false,
-        message: "Only admins can create tasks.",
+        message: "Only admins or owners can create tasks.",
         values: rawData,
         errors: {},
       };
@@ -103,7 +104,7 @@ export async function createTaskAction(
       };
     }
 
-    await prisma.task.create({
+    const createdTask = await prisma.task.create({
       data: {
         title,
         description,
@@ -116,16 +117,22 @@ export async function createTaskAction(
     });
 
     const notification = await createNotification({
-          userId: assigneeId,
-          senderId: user.id,
-          workspaceId,
-          type: NotificationType.WORKSPACE_INVITE_RECEIVED,
-          title: "assigned to task",
-          message: `you have assigned to task : ${title} in workspace ${workspaceId}`,
-          link: `/workspaces/${workspaceId}/board`,
-        });
-    
-        emitNotificationToUser(assigneeId, notification);
+      userId: assigneeId,
+      senderId: user.id,
+      workspaceId,
+      taskId: createdTask.id,
+      type: NotificationType.TASK_ASSIGNED,
+      title: "Assigned to task",
+      message: `You were assigned to "${title}".`,
+      link: `/workspaces/${workspaceId}/tasks/${createdTask.id}`,
+    });
+
+    emitNotificationToUser(assigneeId, notification);
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/workspaces/${workspaceId}`);
+    revalidatePath(`/workspaces/${workspaceId}/tasks`);
+    revalidatePath(`/workspaces/${workspaceId}/board`);
 
     return {
       success: true,
@@ -141,7 +148,7 @@ export async function createTaskAction(
       errors: {},
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return {
       success: false,

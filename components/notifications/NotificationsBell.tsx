@@ -33,7 +33,7 @@ const NotificationsBell = ({ userId }: { userId: string }) => {
       setNotifications(data.notifications || []);
       setUnreadCount(data.unreadNotificationsCount || 0);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }

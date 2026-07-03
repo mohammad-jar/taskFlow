@@ -26,6 +26,7 @@ type TStatusProps = {
     all?: number;
     pending?: number;
     inProgress?: number;
+    review?: number;
     completed?: number;
     accepted?: number;
     rejected?: number;
@@ -37,6 +38,7 @@ type TBoardTask = {
   title: string;
   description?: string | null;
   priority: "LOW" | "MEDIUM" | "HIGH";
+  status?: "PENDING" | "IN_PROGRESS" | "REVIEW" | "COMPLETED";
   dueDate?: Date | string | null;
   assignee?: {
     name?: string | null;

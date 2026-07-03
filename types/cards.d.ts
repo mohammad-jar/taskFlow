@@ -2,12 +2,14 @@ type TDashboardStats = {
   totalTasks: number;
   completedTasks: number;
   inProgressTasks: number;
+  reviewTasks: number;
   pendingTasks: number;
 };
 
 type TCardConfig = {
   key: keyof TDashboardStats;
   title: string;
+  description: string;
   icon: React.ReactNode;
   cardBgClass: string;
   iconColorClass: string;
@@ -16,6 +18,7 @@ type TCardConfig = {
 
 type TDashboardCardProps = {
   title: string;
+  description: string;
   value: number;
   icon: React.ReactNode;
   cardBgClass: string;

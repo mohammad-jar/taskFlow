@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import SubmitButton from "./SubmitButton";
 import SectionIcon from "./SectionIcon";
-import { createTaskAction } from "@/actions/tasks/createtask";
+import { createTaskAction } from "@/actions/tasks/createTaskAction";
 import toast from "react-hot-toast";
 import { getElementClassName } from "@/lib/utils";
 
@@ -22,7 +22,6 @@ const initialState = {
     priority: "",
     dueDate: "",
     assigneeId: "",
-    status: "TODO",
   },
   errors: {},
 };
@@ -35,10 +34,7 @@ interface CreateTaskFormProps {
 const CreateTaskForm = ({ workspaceId, members = [], user_id }: CreateTaskFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction] = useActionState(createTaskAction, initialState);
-  
-  const filteredmembers = members.filter((member) => 
-    member?.user?.id !== user_id
-  )
+  const defaultAssigneeId = state.values.assigneeId || user_id;
 
   useEffect(() => {
     if (state.success && state.message) {
@@ -117,11 +113,12 @@ const CreateTaskForm = ({ workspaceId, members = [], user_id }: CreateTaskFormPr
               <select
                 name="assigneeId"
                 className={getElementClassName("select")}
-                defaultValue={state.values.assigneeId}
+                defaultValue={defaultAssigneeId}
               >
-                {filteredmembers.map((member) => (
-                  <option key={member.id} value={member?.user?.id || ''}>
-                    {member.user?.name} - {member.role}
+                {members.map((member) => (
+                  <option key={member.id} value={member?.user?.id || ""}>
+                    {member.user?.name || member.user?.email || "Workspace member"}{" "}
+                    - {member.role}
                   </option>
                 ))}
               </select>

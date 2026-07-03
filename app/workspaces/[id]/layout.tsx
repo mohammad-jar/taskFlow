@@ -19,35 +19,38 @@ const WorkspaceLayout = async ({
 
   const { workspace, currentUserRole } = data;
 
+  const canCreateTask =
+    currentUserRole === "ADMIN" || currentUserRole === "OWNER";
+
   return (
-    <section className="min-h-full bg-white p-5">
-      <div className="flex items-center justify-between mb-5">
-        <WorkspaceDefine
-          workspace_name={workspace.name}
-          membersCount={workspace.membersCount}
-        />
+    <section className="min-h-full p-4 sm:p-6">
+      <div className="rounded-3xl border border-white/80 bg-white/85 p-4 shadow-sm shadow-blue-100/60 backdrop-blur sm:p-5">
+        <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <WorkspaceDefine
+            workspace_name={workspace.name}
+            membersCount={workspace.membersCount}
+          />
 
-        <div className="flex flex-col space-y-1 items-end">
-          <div className="flex flex-col space-y-1 items-end">
-          {currentUserRole !== "MEMBER" && (
-            <InviteMemberDialog workspace={workspace} />
-          )}
+          <div className="flex flex-wrap items-center gap-2 md:justify-end">
+            {currentUserRole !== "MEMBER" && (
+              <InviteMemberDialog workspace={workspace} />
+            )}
 
-          {currentUserRole === "ADMIN" && (
-            <Link
-              href={`/workspaces/${id}/create_task`}
-              className="inline-flex cursor-pointer h-8 items-center justify-center gap-2 rounded-md border border-blue-500 bg-white px-4 text-md font-medium text-blue-500 transition hover:bg-blue-50"
-            >
-              Create Task
-            </Link>
-          )}
+            {canCreateTask && (
+              <Link
+                href={`/workspaces/${id}/create_task`}
+                className="inline-flex h-8 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 text-sm font-semibold text-blue-700 transition hover:-translate-y-0.5 hover:bg-blue-100"
+              >
+                Create Task
+              </Link>
+            )}
+          </div>
         </div>
-        </div>
+
+        <WorkspaceToolbar workspace_id={id} />
+
+        <div className="mt-5">{children}</div>
       </div>
-
-      <WorkspaceToolbar workspace_id={id} />
-
-      <div className="mt-5">{children}</div>
     </section>
   );
 };

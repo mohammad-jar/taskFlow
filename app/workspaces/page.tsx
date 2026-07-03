@@ -30,7 +30,7 @@ const WorkspacesPage = async () => {
           title="No Workspaces"
           link_name="Create Workspace"
           next_page="/workspaces/create"
-          desc="ipsum dolor sielit. vitae iusto minus dolo"
+          desc="Create your first workspace to organize tasks, members, and team progress."
         />
       )}
     </section>

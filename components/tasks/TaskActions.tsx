@@ -14,7 +14,7 @@ import {
 import { Check, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { updateTaskStatus } from "@/actions/tasks/updateTaskAcrtion";
+import { updateTaskStatus } from "@/actions/tasks/updateTaskAction";
 import { TaskStatus } from "@/generated/prisma/enums";
 import DeleteTaskDialog from "./deleteTaskDialog";
 import { EditTaskSheet } from "./edit-task/EditTaskSheet";
@@ -23,6 +23,7 @@ import type { Task } from "@/generated/prisma/client";
 const statuses = [
   { label: "Pending", value: TaskStatus.PENDING },
   { label: "In Progress", value: TaskStatus.IN_PROGRESS },
+  { label: "Review", value: TaskStatus.REVIEW },
   { label: "Completed", value: TaskStatus.COMPLETED },
 ];
 

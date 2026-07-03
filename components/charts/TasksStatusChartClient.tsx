@@ -16,6 +16,7 @@ interface Props {
     totalTasks?: number;
     pendingTasks?: number;
     inProgressTasks?: number;
+    reviewTasks?: number;
     completedTasks?: number;
   };
 }
@@ -23,6 +24,7 @@ interface Props {
 const TasksStatusChartClient = ({ tasksCount }: Props) => {
   const data = [
     { status: "Completed", count: tasksCount.completedTasks ?? 0 },
+    { status: "Review", count: tasksCount.reviewTasks ?? 0 },
     { status: "In Progress", count: tasksCount.inProgressTasks ?? 0 },
     { status: "Pending", count: tasksCount.pendingTasks ?? 0 },
   ];
@@ -66,6 +68,8 @@ const TasksStatusChartClient = ({ tasksCount }: Props) => {
               fill={
                 entry.status === "Completed"
                   ? "#22c55e"
+                  : entry.status === "Review"
+                    ? "#3b82f6"
                   : entry.status === "In Progress"
                     ? "#f59e0b"
                     : "#ef4444"

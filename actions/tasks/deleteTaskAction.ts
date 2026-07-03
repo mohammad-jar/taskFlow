@@ -7,22 +7,52 @@ import { revalidatePath } from "next/cache";
 export async function deleteTaskAction(taskId: string) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
-      return { success: false, message: "login first to be able delete" };
+    const user = session?.user;
+    if (!user) {
+      return { success: false, message: "Log in first to delete this task." };
     }
-    const deletedTask = await prisma.task.deleteMany({
-      where: {
-        id: taskId,
-        createdById: session.user.id,
+
+    const task = await prisma.task.findUnique({
+      where: { id: taskId },
+      select: {
+        id: true,
+        createdById: true,
+        workspaceId: true,
+        workspace: {
+          select: {
+            members: {
+              where: { userId: user.id },
+              select: { role: true },
+            },
+          },
+        },
       },
     });
-    if (deletedTask.count === 0) {
+
+    if (!task) {
       return { success: false, message: "Task not found or not allowed." };
     }
-    revalidatePath('/tasks')
 
-    return { success: true, message: "Task Deleted Successfully." };
+    const currentMember = task.workspace.members[0];
+    const canDeleteTask =
+      task.createdById === user.id ||
+      currentMember?.role === "OWNER" ||
+      currentMember?.role === "ADMIN";
+
+    if (!canDeleteTask) {
+      return { success: false, message: "Task not found or not allowed." };
+    }
+
+    await prisma.task.delete({
+      where: { id: task.id },
+    });
+
+    revalidatePath(`/workspaces/${task.workspaceId}/tasks`);
+    revalidatePath(`/workspaces/${task.workspaceId}/tasks/${task.id}`);
+    revalidatePath(`/workspaces/${task.workspaceId}/board`);
+
+    return { success: true, message: "Task deleted successfully." };
   } catch {
-    return { success: false, message: "Task colud't Delete." };
+    return { success: false, message: "Task could not be deleted." };
   }
 }

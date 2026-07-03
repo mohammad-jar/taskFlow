@@ -25,6 +25,13 @@ const tasksItems = [
     statusValue: "COMPLETED",
   },
   {
+    key: "review",
+    label: "Review",
+    dotColor: "bg-blue-500",
+    ringColor: "ring-blue-500",
+    statusValue: "REVIEW",
+  },
+  {
     key: "pending",
     label: "Pending",
     dotColor: "bg-red-500",
@@ -99,7 +106,7 @@ const ToolBarStatus = ({
   };
 
   return (
-    <div className="grid gap-2 grid-cols-3 sm:grid-cols-4 md:grid-cols-5">
+    <div className="grid w-full gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       {items.map((item) => {
         const isActive =
           item.statusValue === null
@@ -110,8 +117,12 @@ const ToolBarStatus = ({
           <button
             key={item.key}
             onClick={() => handleClick(item.statusValue)}
-            className={`flex cursor-pointer  items-center justify-between gap-2 rounded-md bg-white p-2 shadow-sm transition
-              ${isActive ? `ring-2 ${item.ringColor}` : "hover:bg-slate-50"}`}
+            className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white bg-white px-3 py-2.5 shadow-sm transition
+              ${
+                isActive
+                  ? `ring-2 ${item.ringColor}`
+                  : "hover:-translate-y-0.5 hover:bg-slate-50"
+              }`}
           >
             <div className="flex items-center gap-1 md:gap-2">
               <span className={`h-2.5 w-2.5 rounded-full ${item.dotColor}`} />
@@ -120,7 +131,7 @@ const ToolBarStatus = ({
               </span>
             </div>
 
-            <span className="text-lg font-bold text-slate-900">
+            <span className="text-lg font-semibold text-slate-950">
               {status[item.key]}
             </span>
           </button>

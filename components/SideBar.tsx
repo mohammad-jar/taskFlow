@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  FolderDot,
   LayoutDashboard,
   Check,
   LogOut,
-  Settings,
   Notebook,
   FilePlus,
   UserRoundPlus,
@@ -19,7 +17,6 @@ import { useState } from "react";
 
 const sidebar_links = [
   { name: "Dashboard", ref: "/dashboard", icon: <LayoutDashboard size={16} /> },
-  { name: "Project", ref: "/project", icon: <FolderDot size={16} /> },
 ];
 
 const workspaces_links = [
@@ -119,11 +116,6 @@ const SidebarContent = ({ onLinkClick }: SidebarContentProps) => {
           <p className="mb-3 text-md font-semibold text-[#667085]">Others</p>
 
           <div className="flex flex-col gap-1.5">
-            <button className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition hover:bg-[#F2F4F7]">
-              <Settings size={16} className="text-[#667085]" />
-              <span className="text-[#344054]">Settings</span>
-            </button>
-
             <button
               onClick={() => {
                 onLinkClick?.();
