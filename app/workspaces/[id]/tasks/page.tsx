@@ -44,10 +44,10 @@ const WorkspaceTasksPage = async ({ params, searchParams }: PageProps) => {
           </p>
         </div>
 
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-        <ToolBarStatus status={stats} pageName="tasks" />
+        <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-start 2xl:justify-between">
+          <ToolBarStatus status={stats} pageName="tasks" />
 
-        <SearchToolbar pageName="tasks" />
+          <SearchToolbar pageName="tasks" />
         </div>
       </div>
       <TasksTable workspaceId={id} tasks={tasks} totalPages={totalPages} />

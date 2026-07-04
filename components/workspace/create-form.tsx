@@ -64,12 +64,13 @@ export default function CreateForm({
             onClick: () => router.push(`/workspaces/${state.workspace_id}`),
           },
         });
-      }else{
+      } else {
         toast.success("Invitation sent", {
           description: state.message,
           action: {
             label: "Go to workspace members",
-            onClick: () => router.push(`/workspaces/${state.workspace_id}/members`),
+            onClick: () =>
+              router.push(`/workspaces/${state.workspace_id}/members`),
           },
         });
       }
@@ -86,13 +87,27 @@ export default function CreateForm({
   }
 
   return (
-    <div className={`${api === "invite" ? "" : "mx-auto sm:w-1/2 max-w-2xl"}`}>
+    <div className={`${api === "invite" ? "" : "mx-auto max-w-2xl"}`}>
       <form
         ref={formRef}
         action={formAction}
-        className={`${api === "invite" ? "" : "space-y-5 rounded-lg border bg-white p-6 shadow-sm"}`}
+        className={`${
+          api === "invite" ? "" : "surface-panel space-y-6 p-6 md:p-7"
+        }`}
       >
-        <h2 className="text-3xl font-semibold text-slate-900 mb-2">{title}</h2>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-600">
+            {api === "workspace" ? "Workspace setup" : "Team invitation"}
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+            {title}
+          </h2>
+          {api === "workspace" && (
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Create a focused place for tasks, members, and team progress.
+            </p>
+          )}
+        </div>
 
         <div className="space-y-5">
           {formInfo.map((field) => {
@@ -105,7 +120,7 @@ export default function CreateForm({
               <div key={field.name} className="space-y-2">
                 <label
                   htmlFor={field.name}
-                  className="text-lg font-semibold text-slate-800"
+                  className="text-sm font-semibold text-slate-800"
                 >
                   {field.label}{" "}
                   {isOptional && (
@@ -143,7 +158,9 @@ export default function CreateForm({
                 )}
 
                 {fieldError && (
-                  <p className="text-sm text-red-500">{fieldError}</p>
+                  <p className="rounded-2xl bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
+                    {fieldError}
+                  </p>
                 )}
               </div>
             );
@@ -154,7 +171,7 @@ export default function CreateForm({
           <button
             type="reset"
             disabled={isPending}
-            className="cursor-pointer rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+            className="secondary-action"
           >
             Cancel
           </button>
@@ -162,7 +179,7 @@ export default function CreateForm({
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="primary-action min-w-28"
           >
             {isPending ? <SpinnerElement /> : "Apply"}
           </button>

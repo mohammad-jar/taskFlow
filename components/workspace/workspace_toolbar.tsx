@@ -16,7 +16,7 @@ const WorkspaceToolbar = ({ workspace_id }: { workspace_id: string }) => {
   ];
 
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-1">
+    <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-1 shadow-inner shadow-white">
       <div className="flex gap-1 overflow-x-auto">
         {toolbarLinks.map((link) => {
           const isActive =
@@ -27,10 +27,10 @@ const WorkspaceToolbar = ({ workspace_id }: { workspace_id: string }) => {
             <Link
               href={link.href}
               key={link.label}
-              className={`relative shrink-0 rounded-xl px-3 py-2 text-sm font-medium transition ${
+              className={`relative shrink-0 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
+                  ? "bg-white text-blue-600 shadow-sm shadow-blue-100"
+                  : "text-slate-600 hover:bg-white/70 hover:text-blue-700"
               }`}
             >
               {link.label}

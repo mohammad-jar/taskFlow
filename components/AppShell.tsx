@@ -9,7 +9,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const isAuthPage = pathname === "/login" || pathname === "/register";
 
   if (isAuthPage) {
-    return <main className="min-h-screen bg-blue-50">{children}</main>;
+    return (
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgb(191_219_254_/_0.8),_transparent_32rem),linear-gradient(135deg,_#f8fafc,_#eff6ff_55%,_#f8fafc)]">
+        {children}
+      </main>
+    );
   }
 
   return (

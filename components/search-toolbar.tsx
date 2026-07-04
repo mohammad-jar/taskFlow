@@ -52,7 +52,7 @@ const SearchToolbar = ({ pageName }: { pageName: string }) => {
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           placeholder="Search tasks..."
-          className="h-11 w-full rounded-2xl border border-white bg-white pl-10 pr-4 text-sm outline-none shadow-sm transition focus:border-blue-300 focus:ring-2 focus:ring-blue-100"
+          className="field-control h-11 pl-10 pr-4 shadow-sm"
         />
       </div>
 

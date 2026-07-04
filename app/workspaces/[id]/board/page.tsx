@@ -12,7 +12,7 @@ const WorkspaceBoardPage = async ({
 
   return (
     <section className="space-y-4">
-      <div className="rounded-3xl border border-slate-100 bg-slate-50/80 p-4">
+      <div className="surface-muted p-4">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-600">
           Workflow board
         </p>

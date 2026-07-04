@@ -10,9 +10,10 @@ const DashboardCard = ({
 }: TDashboardCardProps) => {
   return (
     <div
-      className={`group relative overflow-hidden rounded-3xl p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-100/70 ${cardBgClass}`}
+      className={`interactive-card group relative overflow-hidden rounded-3xl p-5 ${cardBgClass}`}
     >
-      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/50" />
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-blue-100/50 transition group-hover:scale-125" />
+      <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
 
       <div className="relative flex items-start justify-between gap-4">
         <div>
@@ -23,7 +24,7 @@ const DashboardCard = ({
         </div>
 
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${iconBgClass} ${iconColorClass}`}
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm transition group-hover:-rotate-3 group-hover:scale-105 ${iconBgClass} ${iconColorClass}`}
         >
           {icon}
         </div>

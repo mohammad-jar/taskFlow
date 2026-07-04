@@ -13,9 +13,9 @@ import { useState } from "react";
 const sortOptions = [
   { value: "newest", label: "Newest" },
   { value: "oldest", label: "Oldest" },
-  { value: "due_asc", label: "Due Date ↑" },
-  { value: "due_desc", label: "Due Date ↓" },
-  { value: "priority_desc", label: "Priority High ↓" },
+  { value: "due_asc", label: "Due Date Up" },
+  { value: "due_desc", label: "Due Date Down" },
+  { value: "priority_desc", label: "Priority High" },
 ] as const;
 
 export function TasksSortPopover() {
@@ -36,24 +36,23 @@ export function TasksSortPopover() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-md bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-        >
+        <Button variant="outline" className="h-11 px-3">
           <ArrowUpDown size={18} />
           Sort
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="rounded-3xl border-white/80 bg-white/95 p-2 shadow-xl shadow-blue-100/70 backdrop-blur">
         <DropdownMenuGroup>
           {sortOptions.map((option) => (
             <DropdownMenuItem
               onClick={() => handleSort(option.value)}
-              className="flex cursor-pointer items-center gap-4"
+              className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
               key={option.value}
             >
               <span>{option.label}</span>
-              {currentSort === option.value && <Check className="h-6 w-6 bg-blue-600 flex items-center justify-center rounded-full  text-white" />}
+              {currentSort === option.value && (
+                <Check className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 p-1 text-white" />
+              )}
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>

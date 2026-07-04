@@ -4,7 +4,7 @@ import {
   getUserNotifications,
 } from "@/lib/notifications/get-user-notifications";
 import { timeAgo } from "@/lib/utils";
-import { Bell, CheckCircle2 } from "lucide-react";
+import { Bell, CheckCircle2, Inbox } from "lucide-react";
 import Link from "next/link";
 
 const NotificationsPage = async () => {
@@ -19,7 +19,7 @@ const NotificationsPage = async () => {
   const unreadCount = typeof unreadResult === "number" ? unreadResult : 0;
 
   return (
-    <section className="p-5">
+    <section className="page-shell">
       <PageHeader
         title1="Notifications"
         title2="Notifications"
@@ -27,7 +27,7 @@ const NotificationsPage = async () => {
       />
 
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="interactive-card surface-panel p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500">Unread</p>
@@ -35,13 +35,13 @@ const NotificationsPage = async () => {
                 {unreadCount}
               </p>
             </div>
-            <span className="flex h-10 w-10 items-center justify-center rounded-md bg-blue-50 text-blue-600">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
               <Bell size={20} />
             </span>
           </div>
         </div>
 
-        <div className="rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="interactive-card surface-panel p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500">Recent</p>
@@ -49,24 +49,26 @@ const NotificationsPage = async () => {
                 {notifications.length}
               </p>
             </div>
-            <span className="flex h-10 w-10 items-center justify-center rounded-md bg-emerald-50 text-emerald-600">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
               <CheckCircle2 size={20} />
             </span>
           </div>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+      <div className="surface-panel overflow-hidden">
         {notifications.length > 0 ? (
           notifications.map((notification) => {
             const content = (
               <div
-                className={`flex gap-3 border-b border-slate-100 p-4 transition last:border-b-0 ${
-                  notification.isRead ? "bg-white" : "bg-blue-50/40"
+                className={`flex gap-3 border-b border-slate-100 p-4 transition hover:bg-blue-50/40 last:border-b-0 ${
+                  notification.isRead ? "bg-white/70" : "bg-blue-50/60"
                 }`}
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-slate-100 text-sm font-semibold text-slate-600">
-                  {(notification.sender?.name || "TF").slice(0, 2).toUpperCase()}
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-sm font-semibold text-white shadow-sm">
+                  {(notification.sender?.name || "TF")
+                    .slice(0, 2)
+                    .toUpperCase()}
                 </div>
 
                 <div className="min-w-0 flex-1">
@@ -88,7 +90,7 @@ const NotificationsPage = async () => {
                   <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400">
                     <span>{timeAgo(notification.createdAt)}</span>
                     {notification.workspace?.name && (
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-slate-500">
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-500">
                         {notification.workspace.name}
                       </span>
                     )}
@@ -102,7 +104,7 @@ const NotificationsPage = async () => {
                 <Link
                   key={notification.id}
                   href={notification.link}
-                  className="block hover:bg-slate-50"
+                  className="block"
                 >
                   {content}
                 </Link>
@@ -113,8 +115,8 @@ const NotificationsPage = async () => {
           })
         ) : (
           <div className="flex min-h-60 flex-col items-center justify-center px-4 py-10 text-center">
-            <span className="flex h-12 w-12 items-center justify-center rounded-md bg-slate-100 text-slate-500">
-              <Bell size={22} />
+            <span className="flex h-14 w-14 items-center justify-center rounded-3xl bg-blue-50 text-blue-600">
+              <Inbox size={24} />
             </span>
             <h2 className="mt-4 text-lg font-semibold text-slate-900">
               No notifications yet

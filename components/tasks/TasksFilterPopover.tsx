@@ -36,7 +36,6 @@ export function TasksFilterPopover() {
 
   const activeFiltersCount =
     (currentPriority !== "all" ? 1 : 0) + (currentDue !== "all" ? 1 : 0);
-    
 
   const updateParam = (key: "priority" | "due", value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -52,7 +51,7 @@ export function TasksFilterPopover() {
     params.delete("priority");
     params.delete("due");
     router.replace(`${pathname}?${params.toString()}`);
-    setOpen(false)
+    setOpen(false);
   };
 
   return (
@@ -60,7 +59,7 @@ export function TasksFilterPopover() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-md bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          className="h-11 px-3"
         >
           <SlidersHorizontal size={18} />
           Filter
@@ -71,28 +70,35 @@ export function TasksFilterPopover() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-80 rounded-3xl border-white/80 bg-white/95 p-4 shadow-xl shadow-blue-100/70 backdrop-blur">
         <div className="space-y-2">
-          <h4 className="leading-none text-lg font-medium">Filter tasks</h4>
-          <div className="h-px bg-gray-300 mt-4" />
+          <h4 className="text-lg font-semibold leading-none text-slate-950">
+            Filter tasks
+          </h4>
+          <p className="text-sm text-slate-500">
+            Narrow the task list by priority or due date.
+          </p>
+          <div className="mt-4 h-px bg-slate-200" />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="mt-4 grid grid-cols-2 gap-4">
           <RadioGroup
             value={currentPriority}
             onValueChange={(value) => updateParam("priority", value)}
           >
-            <h4 className="leading-none text-lg font-medium">Priority</h4>
+            <h4 className="mb-3 text-sm font-semibold leading-none text-slate-800">
+              Priority
+            </h4>
 
             {priorityOptions.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
+              <div key={option.value} className="flex items-center space-x-2 py-1">
                 <RadioGroupItem
                   value={option.value}
                   id={`priority-${option.value}`}
                 />
                 <Label
                   htmlFor={`priority-${option.value}`}
-                  className="cursor-pointerfont-normal text-lg"
+                  className="cursor-pointer text-sm font-medium text-slate-600"
                 >
                   {option.label}
                 </Label>
@@ -104,16 +110,18 @@ export function TasksFilterPopover() {
             value={currentDue}
             onValueChange={(value) => updateParam("due", value)}
           >
-            <h4 className="leading-none text-lg font-medium">Due Date</h4>
+            <h4 className="mb-3 text-sm font-semibold leading-none text-slate-800">
+              Due Date
+            </h4>
             {dueOptions.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
+              <div key={option.value} className="flex items-center space-x-2 py-1">
                 <RadioGroupItem
                   value={option.value}
                   id={`due-${option.value}`}
                 />
                 <Label
                   htmlFor={`due-${option.value}`}
-                  className="cursor-pointer text-lg"
+                  className="cursor-pointer text-sm font-medium text-slate-600"
                 >
                   {option.label}
                 </Label>
@@ -124,7 +132,7 @@ export function TasksFilterPopover() {
         <Button
           type="button"
           variant="destructive"
-          className="w-1/2 text-md mx-auto mt-4 cursor-pointer"
+          className="mx-auto mt-5 w-1/2 cursor-pointer text-sm"
           onClick={clearFilters}
         >
           Clear filters

@@ -43,7 +43,7 @@ const BoardColumn = ({
     <div
       className={`flex min-h-125 flex-col rounded-3xl border border-white/80 bg-gradient-to-b ${
         columnStyle[title] ?? "from-slate-50 to-white"
-      } shadow-sm`}
+      } shadow-sm shadow-blue-100/50`}
     >
       <div className="flex items-center justify-between border-b border-white/80 px-4 py-3">
         <div className="flex items-center gap-2">
@@ -58,14 +58,16 @@ const BoardColumn = ({
       <div className="flex flex-1 flex-col gap-3 p-3">
         {tasks.length === 0 ? (
           <div className="flex h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white/80 px-5 text-center text-sm text-slate-400">
-            <span className="text-2xl">+</span>
-            <span className="mt-1">No tasks in {title.toLowerCase()}</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-slate-100 text-lg text-slate-500">
+              +
+            </span>
+            <span className="mt-2">No tasks in {title.toLowerCase()}</span>
           </div>
         ) : (
           tasks.map((task) => (
             <div
               key={task.id}
-              className="rounded-2xl border border-white bg-white/95 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-100/60"
+              className="interactive-card rounded-2xl border border-white bg-white/95 p-4 shadow-sm"
             >
               <div className="mb-3 flex items-start justify-between gap-3">
                 <Link
@@ -80,7 +82,7 @@ const BoardColumn = ({
                 {actionLabel && nextStatus && (
                   <button
                     onClick={() => updateStatus(task.id, nextStatus)}
-                    className={`cursor-pointer rounded-md px-2 py-1 text-sm transition ${
+                    className={`cursor-pointer rounded-xl px-2.5 py-1.5 text-sm font-semibold transition hover:-translate-y-0.5 ${
                       actionClassName ?? "bg-slate-100 text-slate-600"
                     }`}
                   >

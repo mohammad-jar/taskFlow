@@ -106,33 +106,34 @@ const ToolBarStatus = ({
   };
 
   return (
-    <div className="grid w-full gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fit,minmax(8.75rem,1fr))] gap-2">
       {items.map((item) => {
         const isActive =
           item.statusValue === null
             ? !currentStatus
             : currentStatus === item.statusValue;
+        const count = status[item.key] ?? 0;
 
         return (
           <button
             key={item.key}
             onClick={() => handleClick(item.statusValue)}
-            className={`flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white bg-white px-3 py-2.5 shadow-sm transition
+            className={`grid min-w-0 cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border border-white bg-white/90 px-3 py-2.5 text-left shadow-sm transition-all duration-200
               ${
                 isActive
-                  ? `ring-2 ${item.ringColor}`
-                  : "hover:-translate-y-0.5 hover:bg-slate-50"
+                  ? `bg-white ring-2 ${item.ringColor} shadow-blue-100`
+                  : "hover:-translate-y-0.5 hover:bg-blue-50/50 hover:shadow-md hover:shadow-blue-100/60"
               }`}
           >
-            <div className="flex items-center gap-1 md:gap-2">
-              <span className={`h-2.5 w-2.5 rounded-full ${item.dotColor}`} />
-              <span className="text-sm font-medium text-slate-600">
-                {item.label}
-              </span>
-            </div>
+            <span
+              className={`h-2.5 w-2.5 shrink-0 rounded-full ${item.dotColor}`}
+            />
+            <span className="min-w-0 text-sm font-medium leading-tight text-slate-600">
+              {item.label}
+            </span>
 
-            <span className="text-lg font-semibold text-slate-950">
-              {status[item.key]}
+            <span className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 px-2 text-base font-semibold tabular-nums text-slate-950 shadow-inner">
+              {count}
             </span>
           </button>
         );

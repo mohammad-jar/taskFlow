@@ -13,9 +13,10 @@ const WorkspacesPage = async () => {
     description: item.workspace.description,
     icon: item.workspace.icon,
     membersCount: item.workspace._count.members,
+    role: item.role,
   }));
   return (
-    <section className="p-5">
+    <section className="page-shell">
       <PageHeader
         title1="Workspaces"
         title2="Workspaces"

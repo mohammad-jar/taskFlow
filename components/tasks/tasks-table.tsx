@@ -46,10 +46,10 @@ const TasksTable = ({ tasks, totalPages, workspaceId }: TasksTableProps) => {
   const currentPage = Number(searchParams.get("page") || 1);
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-white/80 bg-white/90 shadow-sm shadow-blue-100/60">
+    <div className="surface-panel overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full">
-          <thead className="bg-slate-50">
+          <thead className="bg-slate-50/90">
             <tr className="text-left text-xs uppercase tracking-[0.16em] text-slate-400">
               <th className="min-w-72 px-6 py-4 font-semibold">Task</th>
               <th className="px-6 py-4 font-semibold">Priority</th>
@@ -63,7 +63,7 @@ const TasksTable = ({ tasks, totalPages, workspaceId }: TasksTableProps) => {
             {tasks.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-16">
-                  <div className="mx-auto flex max-w-md flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+                  <div className="mx-auto flex max-w-md flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/80 px-6 py-10 text-center">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                       <ClipboardList size={22} />
                     </div>
@@ -82,7 +82,7 @@ const TasksTable = ({ tasks, totalPages, workspaceId }: TasksTableProps) => {
               tasks.map((task) => (
                 <tr
                   key={task.id}
-                  className="border-b border-slate-100 transition hover:bg-blue-50/40 last:border-b-0"
+                  className="border-b border-slate-100 transition-colors hover:bg-blue-50/40 last:border-b-0"
                 >
                   <td className="px-6 py-4">
                     <Link
@@ -100,7 +100,7 @@ const TasksTable = ({ tasks, totalPages, workspaceId }: TasksTableProps) => {
 
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex rounded-full px-3 py-1 text-md font-medium ${
+                      className={`status-pill ${
                         priorityStyles[task.priority]
                       }`}
                     >
@@ -119,7 +119,7 @@ const TasksTable = ({ tasks, totalPages, workspaceId }: TasksTableProps) => {
 
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex rounded-full px-3 py-1 text-md font-medium ${
+                      className={`status-pill ${
                         statusStyles[task.status]
                       }`}
                     >

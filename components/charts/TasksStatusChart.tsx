@@ -22,7 +22,7 @@ interface Props {
 
 const TasksStatusChart = ({ tasksCount }: Props) => {
   return (
-    <div className="mt-5 w-full rounded-3xl border border-white/80 bg-white/90 p-6 shadow-sm shadow-blue-100/60">
+    <div className="surface-panel mt-5 w-full p-6">
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight text-slate-950">
           Tasks by Status

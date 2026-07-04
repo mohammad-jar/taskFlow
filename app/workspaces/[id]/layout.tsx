@@ -23,8 +23,8 @@ const WorkspaceLayout = async ({
     currentUserRole === "ADMIN" || currentUserRole === "OWNER";
 
   return (
-    <section className="min-h-full p-4 sm:p-6">
-      <div className="rounded-3xl border border-white/80 bg-white/85 p-4 shadow-sm shadow-blue-100/60 backdrop-blur sm:p-5">
+    <section className="page-shell min-h-full">
+      <div className="surface-panel p-4 sm:p-5">
         <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <WorkspaceDefine
             workspace_name={workspace.name}
@@ -39,7 +39,7 @@ const WorkspaceLayout = async ({
             {canCreateTask && (
               <Link
                 href={`/workspaces/${id}/create_task`}
-                className="inline-flex h-8 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 text-sm font-semibold text-blue-700 transition hover:-translate-y-0.5 hover:bg-blue-100"
+                className="primary-action h-9 px-4 py-0"
               >
                 Create Task
               </Link>

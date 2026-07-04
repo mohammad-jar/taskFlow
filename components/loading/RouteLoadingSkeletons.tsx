@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 
 const skeletonBase =
-  "animate-pulse rounded-2xl bg-gradient-to-r from-slate-100 via-white to-slate-100";
+  "shimmer-surface rounded-2xl bg-gradient-to-r from-slate-100 via-white to-slate-100";
 
 const SkeletonBlock = ({
   className,
@@ -14,13 +14,13 @@ const SkeletonBlock = ({
 );
 
 const LoadingPanel = ({ children }: { children: ReactNode }) => (
-  <div className="rounded-3xl border border-white/80 bg-white/90 p-5 shadow-sm shadow-blue-100/60">
+  <div className="surface-panel p-5">
     {children}
   </div>
 );
 
 export const DashboardLoadingSkeleton = () => (
-  <div className="p-4 sm:p-6">
+  <div className="page-shell">
     <LoadingPanel>
       <SkeletonBlock className="h-3 w-36" />
       <SkeletonBlock className="mt-4 h-10 w-80 max-w-full" />
@@ -62,7 +62,7 @@ export const DashboardLoadingSkeleton = () => (
 );
 
 export const WorkspacesLoadingSkeleton = () => (
-  <div className="p-4 sm:p-6">
+  <div className="page-shell">
     <LoadingPanel>
       <SkeletonBlock className="h-3 w-32" />
       <SkeletonBlock className="mt-4 h-9 w-72 max-w-full" />
@@ -224,7 +224,7 @@ export const MembersLoadingSkeleton = () => (
 );
 
 export const NotificationsLoadingSkeleton = () => (
-  <div className="p-4 sm:p-6">
+  <div className="page-shell">
     <LoadingPanel>
       <SkeletonBlock className="h-3 w-36" />
       <SkeletonBlock className="mt-4 h-9 w-72 max-w-full" />
@@ -241,7 +241,7 @@ export const NotificationsLoadingSkeleton = () => (
 );
 
 export const FormLoadingSkeleton = () => (
-  <div className="p-4 sm:p-6">
+  <div className="page-shell">
     <LoadingPanel>
       <SkeletonBlock className="h-8 w-64 max-w-full" />
       <SkeletonBlock className="mt-3 h-4 w-full max-w-lg" />

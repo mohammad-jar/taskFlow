@@ -75,7 +75,7 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
   return (
     <section className="space-y-5">
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.3fr_0.7fr]">
-        <div className="overflow-hidden rounded-3xl border border-white/80 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-5 shadow-sm">
+        <div className="surface-panel overflow-hidden bg-gradient-to-br from-blue-50 via-white to-slate-50 p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-sm font-medium text-blue-600">
@@ -103,7 +103,7 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
               return (
                 <div
                   key={item.key}
-                  className="rounded-2xl border border-white bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="interactive-card rounded-2xl border border-white bg-white/90 p-4 shadow-sm"
                 >
                   <div
                     className={`mb-3 flex h-9 w-9 items-center justify-center rounded-xl ${item.className}`}
@@ -120,7 +120,7 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/80 bg-white/90 p-5 shadow-sm">
+        <div className="surface-panel p-5">
           <h3 className="text-sm font-semibold text-slate-900">
             Quick actions
           </h3>
@@ -128,7 +128,7 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
             {canManageTasks && (
               <Link
                 href={`/workspaces/${id}/create_task`}
-                className="flex items-center justify-between rounded-2xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:-translate-y-0.5 hover:bg-blue-100"
+                className="flex items-center justify-between rounded-2xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 transition hover:-translate-y-0.5 hover:bg-blue-100"
               >
                 Create task
                 <ArrowRight size={16} />
@@ -136,21 +136,21 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
             )}
             <Link
               href={`/workspaces/${id}/tasks`}
-              className="flex items-center justify-between rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-50"
+              className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/70 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/70 hover:text-blue-700"
             >
               View tasks
               <ArrowRight size={16} />
             </Link>
             <Link
               href={`/workspaces/${id}/board`}
-              className="flex items-center justify-between rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-50"
+              className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/70 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/70 hover:text-blue-700"
             >
               Open board
               <ArrowRight size={16} />
             </Link>
             <Link
               href={`/workspaces/${id}/members`}
-              className="flex items-center justify-between rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-50"
+              className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/70 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/70 hover:text-blue-700"
             >
               View members
               <ArrowRight size={16} />
@@ -175,7 +175,7 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <div className="overflow-hidden rounded-3xl border border-white/80 bg-white/90 shadow-sm">
+        <div className="surface-panel overflow-hidden">
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
             <div className="flex items-center gap-2">
               <ListTodo size={18} className="text-blue-600" />
@@ -197,7 +197,7 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
                 <Link
                   key={task.id}
                   href={`/workspaces/${id}/tasks/${task.id}`}
-                  className="grid gap-3 border-b border-slate-100 px-4 py-3 last:border-b-0 md:grid-cols-[1fr_auto]"
+                  className="grid gap-3 border-b border-slate-100 px-4 py-3 transition hover:bg-blue-50/40 last:border-b-0 md:grid-cols-[1fr_auto]"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-slate-900">
@@ -245,7 +245,7 @@ const WorkspaceDetailsPage = async ({ params }: WorkspaceDetailsPageProps) => {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-white/80 bg-white/90 shadow-sm">
+        <div className="surface-panel overflow-hidden">
           <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
             <UsersRound size={18} className="text-blue-600" />
             <h3 className="text-sm font-semibold text-slate-900">

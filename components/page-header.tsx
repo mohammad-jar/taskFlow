@@ -10,8 +10,11 @@ type Props = {
 };
 const PageHeader = ({ title1, title2, desc, right_link, href }: Props) => {
   return (
-    <div className="mb-6 flex flex-col gap-4 rounded-3xl border border-white/70 bg-white/80 p-5 shadow-sm shadow-blue-100/60 backdrop-blur md:flex-row md:items-center md:justify-between">
-      <div>
+    <div className="surface-panel relative mb-6 flex flex-col gap-4 overflow-hidden p-5 md:flex-row md:items-center md:justify-between">
+      <div className="absolute -right-16 -top-20 h-44 w-44 rounded-full bg-blue-100/70 blur-2xl" />
+      <div className="absolute -bottom-24 left-1/3 h-40 w-40 rounded-full bg-emerald-100/40 blur-2xl" />
+
+      <div className="relative">
         {title1 && (
           <p className="mb-2 hidden text-xs font-semibold uppercase tracking-[0.22em] text-blue-600 sm:block">
             {title1}
@@ -30,7 +33,7 @@ const PageHeader = ({ title1, title2, desc, right_link, href }: Props) => {
       {href && (
         <Link
           href={href}
-          className="inline-flex h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          className="primary-action relative h-10 w-fit"
         >
           <Plus size={20} />
           {right_link}
